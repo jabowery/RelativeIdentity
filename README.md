@@ -75,7 +75,7 @@ lake build
 
 * `lake update` — Update dependencies to latest compatible versions.
 * `lake clean` — Remove build artifacts.
-* `lake exe cache get` — (If using Mathlib) Download pre-compiled cache for faster builds.
+* `lake exe cache get` — Download pre-compiled cache for faster builds.
 * `lake build UniversalityTheorem` — Build only the library.
 
 ## Troubleshooting
@@ -89,6 +89,5 @@ lake build
 
 * [Lean 4 Manual](https://leanprover.github.io/lean4/doc/)
 * [Lake User Guide](https://github.com/leanprover/lake)
-* [Mathlib (if used)](https://leanprover-community.github.io/mathlib4_docs/)
 
 Enjoy exploring the proof!
