@@ -1,3 +1,4 @@
 import UniversalityTheorem.Universality
 import UniversalityTheorem.EtterEq
+import UniversalityTheorem.Stereo
 import UniversalityTheorem.Progress
