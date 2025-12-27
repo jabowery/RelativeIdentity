@@ -6,11 +6,7 @@ Based on the writings of Tom Etter
 
 Abstract
 
-This document synthesizes the theoretical framework of relative identity. It proceeds from the
-definition of the intrinsic “Quine Identity” within standard axiom systems to the generalization of
-identity as a three-place predicate (x regards y as z). It demonstrates that while standard equal-
-ity is a logical dead-end, three-place identity is an open-ended system capable of expressing all of
-mathematics, including Zermelo-Fraenkel set theory.
+This document synthesizes the theoretical framework of relative identity. It proceeds from the definition of the intrinsic “Quine Identity” within standard axiom systems to the generalization of identity as a three-place predicate (x regards y as z). It demonstrates that while standard equality is a logical dead-end, three-place identity is an open-ended system capable of expressing all of mathematics, including Zermelo-Fraenkel set theory.
 
 See the docs for the paper UniversalityOfThreePlaceIdentity.tex
 
