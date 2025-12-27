@@ -17,7 +17,7 @@ This Lean 4 project proves the **Universality Theorem** for **Relative Identity*
 /-!
 ## 4. The Universality Theorem
 -/
-UniversalityTheorem.Universality.theorem slang_universality_ZFC
+UniversalityTheorem.Universality.slang_universality_ZFC
 ```
 
 ## Quick Start (for users unfamiliar with Lean 4)
