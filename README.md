@@ -41,8 +41,8 @@ The `lean-toolchain` file in this repository pins the exact Lean version—Elan 
 ### 2. Clone the repository
 
 ```bash
-git clone <your-repo-url-here>
-cd UniversalityTheorem
+git clone https://github.com/jabowery/RelativeIdentity.git
+cd RelativeIdentity
 ```
 
 ### 3. Build the project
