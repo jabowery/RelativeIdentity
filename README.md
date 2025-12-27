@@ -2,7 +2,8 @@
 
 ### Identity, Equality, and Universality
 A Condensation of the Works of Tom Etter
-Based on the writings of Tom Etter
+As Interpreted by colleague James Bowery
+
 
 Abstract
 
