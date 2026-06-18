@@ -13,7 +13,7 @@ variable {U : Type u}
 
 A Stereo structure is two independent equivalence relations `E1`, `E2` on `U`.
 
-**Provenance / status — see `Errata.pdf` (Errata 1, 2, 4).**
+**Provenance / status — see `docs/Errata.pdf` (Errata 1, 2, 4).**
 The membership `StereoMem y x := ¬(E1 y x ∧ E2 y x)` defined below is the *present
 author's reconstruction*; it does **not** occur in Etter's papers. It is **symmetric**
 (proved in `Refutation.stereoMem_symm`), and ZF membership is not symmetric
@@ -142,7 +142,7 @@ theorem link_determines_x (S : StereoModel U) (q x x' y y' : U) :
 /-!
 ## The Stereo Equality "Theorem" — an unfinished Etter conjecture, stated for future work
 
-**Status (checked against the primary sources; see `Errata.pdf` Erratum 3).** The
+**Status (checked against the primary sources; see `docs/Errata.pdf` Erratum 3).** The
 **three**-equality RCV→ZF result is complete and proved (`RCV.mem_RCV_definable`, via
 `Cell`). The **two**-equality "Stereo Equality Theorem" is *not* a theorem in Etter's
 surviving papers. *Three-place Identity* [E3, §3] states it informally and says the proof is

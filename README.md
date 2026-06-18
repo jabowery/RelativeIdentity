@@ -88,7 +88,7 @@ The main body (Definitions D1/D2, Theorems 4.1–4.3, the round-trip, and the "u
 claim) is correct and stands. The **appendix** constructions were corrected after checking
 against Etter's primary sources:
 
-- [`Errata.pdf`](Errata.pdf) — the corrections: the appendices' `¬(E1 ∧ E2)` / `¬(R ∧ C)`
+- [`docs/Errata.pdf`](docs/Errata.pdf) (source `docs/Errata.tex`) — the corrections: the appendices' `¬(E1 ∧ E2)` / `¬(R ∧ C)`
   membership is *symmetric* and is **not** a ZF membership; Etter's actual RCV→ZF route is
   the cell construction of *The Expressive Power of Equality*, now mechanized in `Cell.lean`.
 - [`ROADMAP.md`](ROADMAP.md) — the plan and status of the correction work, phase by phase.

@@ -4,7 +4,7 @@ import Mathlib.SetTheory.ZFC.Basic
 # Appendix B: Etter's cell construction (RCV → ZF)
 
 A faithful mechanization of the construction in Tom Etter, *The Expressive Power of
-Equality* [E1] — the construction the appendices **should** have used (see `Errata.pdf`,
+Equality* [E1] — the construction the appendices **should** have used (see `docs/Errata.pdf`,
 Errata 2 & 4). It replaces the refuted symmetric-intersection membership of `Stereo.lean`
 / `RCV.lean`.
 

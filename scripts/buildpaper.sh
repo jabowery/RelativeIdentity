@@ -1,8 +1,10 @@
 #!/usr/bin/env bash
-# Compile the paper to PDF and report only the LaTeX errors (lines starting with '!')
-# plus undefined references/citations. Usage: scripts/buildpaper.sh
+# Compile a LaTeX document in docs/ to PDF and report only the LaTeX errors (lines starting
+# with '!') plus undefined references/citations.
+# Usage: scripts/buildpaper.sh [TEXFILE]   (default: UniversalityOfThreePlaceIdentity.tex)
 set -u
 cd "$(dirname "$0")/../docs" || exit 2
+tex="${1:-UniversalityOfThreePlaceIdentity.tex}"
 
 # The paper's verbatim Lean listing contains math Unicode, so prefer a Unicode engine
 # (lualatex/xelatex); fall back to pdflatex only if those are unavailable.
@@ -16,9 +18,9 @@ if [ -z "$engine" ]; then
 fi
 echo "(engine: $engine)"
 
-"$engine" -interaction=nonstopmode -halt-on-error UniversalityOfThreePlaceIdentity.tex \
+"$engine" -interaction=nonstopmode -halt-on-error "$tex" \
   > /tmp/paper_build.log 2>&1
-"$engine" -interaction=nonstopmode -halt-on-error UniversalityOfThreePlaceIdentity.tex \
+"$engine" -interaction=nonstopmode -halt-on-error "$tex" \
   >> /tmp/paper_build.log 2>&1
 status=$?
 

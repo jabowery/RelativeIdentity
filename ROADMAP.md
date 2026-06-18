@@ -2,7 +2,7 @@
 
 Status: **draft**. Authority for the math: Etter's primary sources. Authority for the
 proof discipline: [`AGENTS.md`](AGENTS.md). Authority for *what is currently wrong*:
-[`Errata.pdf`](Errata.pdf).
+[`docs/Errata.pdf`](docs/Errata.pdf) (source `docs/Errata.tex`).
 
 This document plans the work to bring the Lean development and the repository into
 alignment with (a) Etter's actual constructions and (b) the AGENTS.md rule that *no
@@ -213,7 +213,15 @@ Exit: no `sorry` is silent; the incomplete item is a single, labeled, cited goal
 5.2 Appendix B of the paper cites **[E1]** and uses the cell construction; Appendix A is
     marked as the two-equality open item. Fold the Errata's corrections into the source
     `.tex`.
-5.3 Cross-link `ROADMAP.md`, `AGENTS.md`, `Errata.pdf` from the README.
+5.3 Cross-link `ROADMAP.md`, `AGENTS.md`, `docs/Errata.pdf` from the README.
+
+5.4 **Two-document split (post-review).** The corrected paper and the errata are now
+    separate artifacts: `docs/UniversalityOfThreePlaceIdentity.tex` is a *clean* corrected
+    paper (no errata language; appendices present the cell construction and the stereo
+    conjecture directly) suitable to replace the Festschrift submission; `docs/Errata.tex`
+    (→ `docs/Errata.pdf`) is a standalone errata paper referencing the uncorrected
+    published version, for separate later publication. The source-less root `Errata.pdf`
+    was removed in favour of `docs/Errata.{tex,pdf}`.
 
 Exit: README structure table matches `git ls-files`; no doc asserts the withdrawn claims.
 

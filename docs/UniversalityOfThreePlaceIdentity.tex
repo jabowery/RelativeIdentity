@@ -32,6 +32,7 @@
 \newtheorem{proposition}[theorem]{Proposition}
 \newtheorem{corollary}[theorem]{Corollary}
 \newtheorem{definition}[theorem]{Definition}
+\newtheorem{conjecture}[theorem]{Conjecture}
 \newtheorem{axiom}{Axiom}
 
 \theoremstyle{remark}
@@ -334,69 +335,55 @@ Rota GC. The Primacy of Identity. In: Indiscrete Thoughts. Birkh\"auser; 1997.
 
 \clearpage
 \begin{appendices}
-\section{The Stereo Equality Theorem}
+\section{The Stereo Equality Conjecture}
 \label{app:stereo}
 
-While the main body of this paper focuses on the general three-place identity $x(y=z)$, Etter also proposed a discrete simplification known as the \emph{Stereo Equality Theorem}, which claims that two independent equality predicates, taken together, already have sufficient expressivity for ZFC.
+Alongside the three-place identity of the main body, Etter proposed a discrete simplification he called the \emph{Stereo Equality Theorem}: that \emph{two} equality predicates, taken together, already have the expressive power of ZF set theory. A single equality predicate is expressively dead-ended --- it distinguishes only equivalence classes --- whereas two predicates provide the ``binocular depth'' needed to encode order, and hence pairs, relations, and membership.
 
-\paragraph{Status (checked against the primary sources; see \texttt{Errata.pdf}).} Unlike the \emph{three}-equality RCV result of Appendix~\ref{app:rcv} --- fully proved by Etter's cell construction in \emph{The Expressive Power of Equality}\cite{etter_power} and mechanized in \texttt{Cell.lean} --- this \emph{two}-equality theorem is \emph{not} a finished theorem in Etter's surviving papers. \emph{Three-place Identity}\cite{etter_3pl} states it informally and defers its proof to Section~3 of \emph{Membership and Identity}\cite{etter_mem}; but the surviving M\&I draft develops the requisite machinery (intrinsic identity, \emph{division}, \emph{Other}) and then breaks off before stating or proving it --- its Section~3 ends with a bare, unproved theorem and Section~4 is an outline, and R.~Shoup notes the paper was never completed. The only concrete construction Etter gives is the \emph{link sketch} of \cite{etter_3pl}, footnote~5: an equality \emph{without transitivity} $[x{=}y]$ (reflexive and symmetric only), a ``meet'' operator $[x =: y,z,\dots]$ (``$x$ equals each of $y,z,\dots$, and anything unequal to $y$ is unequal to $x$, ditto $z$''), and a link membership
-\[ x \in' y \;:=\; \exists\, x',x'',y',y'',q,q',q''.\; [q{=:}x,q'] \;\&\; [q'{=:}y,q,q''] \;\&\; [x'{=:}x,x''] \;\&\; [x''{=:}x,x'] \;\&\; [y'{=:}y,y''] \;\&\; [y''{=:}y,y'], \]
-together with the conjecture that ``there is a set model of $[x{=}y]$ such that $x\in'y$ is membership in a set model of set theory.'' Accordingly \texttt{Stereo.lean} does \emph{not} assert a theorem: it transcribes these definitions faithfully (\texttt{WeakEq}, \texttt{Meet}, \texttt{MemPrime}) and states the result as a precise, falsifiable \texttt{Prop} --- \texttt{etterStereoConjecture}, carrying no \texttt{sorry} --- intended as the subject of a future paper that proves or refutes it in Lean.
+At present this is a \emph{conjecture}. Etter announces it in \emph{Three-place Identity}\cite{etter_3pl} and defers the proof to Section~3 of \emph{Membership and Identity}\cite{etter_mem}; the surviving draft of the latter develops the relevant machinery (intrinsic identity, \emph{division}, the category of \emph{Other}) but breaks off before reaching the theorem. Our contribution is to state the conjecture precisely enough to be proved or refuted, and to record it as a machine-checkable proposition in Lean.
 
-\subsection{The Stereo Structure}
+\subsection{Why a symmetric combination cannot suffice}
 
-A single equality predicate satisfying reflexivity, symmetry, and transitivity is expressively dead-ended; it can only distinguish equivalence classes. However, by introducing \emph{two} such predicates, $E_1$ and $E_2$, we gain the ``binocular depth'' necessary to encode structure.
+Write $E_1$ and $E_2$ for the two equalities, each reflexive, symmetric and transitive. The simplest candidate for a derived membership is the intersection
+\[
+y \in' x \iff \neg\bigl(E_1(y, x) \land E_2(y, x)\bigr).
+\]
+Because $E_1$ and $E_2$ are symmetric, this relation is symmetric: $y \in' x \iff x \in' y$. Set membership is not symmetric --- $\emptyset \in \{\emptyset\}$ while $\{\emptyset\} \notin \emptyset$ --- so no symmetric combination of the two equalities can be a membership relation. The \emph{directedness} of membership must instead be supplied by a directed \emph{link} between the two dimensions. (This obstruction is recorded in Lean as \texttt{Stereo.Refutation}.)
 
-We define a \emph{Stereo Equality} structure on a type $U$ as:
-\begin{definition}[Stereo Equality]
-A structure consisting of two independent equivalence relations $E_1$ and $E_2$ on $U$.
+\subsection{Etter's link construction}
+
+The construction that supplies this directedness is sketched in \cite{etter_3pl}, footnote~5. It is built not on two transitive equalities but on a single equality \emph{with transitivity dropped}.
+
+\begin{definition}[Weak equality]
+$[x{=}y]$ is a predicate that is reflexive and symmetric but \emph{not} necessarily transitive.
 \end{definition}
 
-\subsection{Derived Membership and Irreflexivity of membership}
+\begin{definition}[Meet]
+$[x =: y, z, \dots]$ holds when $x$ equals each of $y, z, \dots$ and anything unequal to $y$ is unequal to $x$, ditto $z$: that is, $x$ lies at the meet of their neighbourhoods.
+\end{definition}
 
-Just as with three-place identity, we can derive a membership relation from stereo equality. The intuition is that an object $y$ is a member of $x$ if $x$ ``distinguishes'' $y$ from itself in a stereo sense.
-
-\begin{definition}[Stereo Membership]
-Given a stereo equality structure $(E_1, E_2)$, we define membership $\in'$ as:
+\begin{definition}[Link membership]
 \[
-y \in' x \iff \neg(E_1(y, x) \land E_2(y, x))
+x \in' y \;:=\; \exists\, x',x'',y',y'',q,q',q''.\;
+[q{=:}x,q'] \;\&\; [q'{=:}y,q,q''] \;\&\; [x'{=:}x,x''] \;\&\; [x''{=:}x,x'] \;\&\; [y'{=:}y,y''] \;\&\; [y''{=:}y,y'].
 \]
 \end{definition}
 
-\paragraph{Correction (\texttt{Errata.pdf}, Errata~1--2).} This intersection formula is the present author's reconstruction; it does \emph{not} occur in Etter's papers. Because $E_1$ and $E_2$ are equivalence relations (hence symmetric), the relation is \emph{symmetric}: $y \in' x \iff x \in' y$ (proved in \texttt{Stereo.Refutation.stereoMem\_symm}). ZF membership is not symmetric ($\emptyset \in \{\emptyset\}$ but $\{\emptyset\} \notin \emptyset$), so this $\in'$ \emph{cannot} be a ZF membership. The irreflexivity result below is valid \emph{for this definition}, but it establishes no further ZF axiom; the correct two-equality membership (if it exists) is the open problem noted above.
+\begin{conjecture}[Stereo Equality]
+There is a model of the weak equality $[x{=}y]$ in which the derived link membership $x \in' y$ is the membership relation of a model of ZF set theory.
+\end{conjecture}
 
-A crucial result is that this derived membership automatically satisfies the Axiom of Irreflexivity of membership.
+These definitions are transcribed in \texttt{Stereo.lean} as \texttt{WeakEq}, \texttt{Meet}, and \texttt{MemPrime}, and the conjecture as the proposition \texttt{etterStereoConjecture}. It is stated deliberately as a \texttt{Prop} rather than a proved \texttt{theorem}: a future paper may establish \texttt{etterStereoConjecture}, or its negation, in Lean. Footnote~5 uses a single non-transitive equality, which Etter calls ``the heart'' of the two-equality theorem; isolating the precise two-equality packaging is itself part of the open problem.
 
-\begin{theorem}[Stereo Irreflexivity of membership]
-For any $x \in U$, $\neg(x \in' x)$.
-\end{theorem}
-\begin{proof}
-By definition, $x \in' x \iff \neg(E_1(x, x) \land E_2(x, x))$. Since $E_1$ and $E_2$ are equivalence relations, they are reflexive. Thus $E_1(x, x)$ and $E_2(x, x)$ are always true. Therefore, $\neg(\mathsf{true} \land \mathsf{true})$ is false, so $x \notin' x$.
-\end{proof}
+\subsection{Relation to three-place identity}
 
-\subsection{Encoding Ordered Pairs}
-
-The expressive power of stereo equality lies in its ability to encode ordered pairs, which is impossible with a single equality. We can view $E_1$ as encoding ``position 1'' information and $E_2$ as encoding ``position 2''. An ordered pair $\langle x, y \rangle$ can be encoded by a ``link'' object $q$ that connects $x$ and $y$ through the two dimensions:
-\[
-\exists q.\; E_1(q, x) \land (\exists q'.\; E_1(q, q') \land E_2(q', y))
-\]
-This link is the ordered-pair mechanism Etter intended for the two-equality case. That it suffices to build full ZF set theory is precisely the \emph{open} Stereo Equality Theorem stated above; it is \emph{not} established by the symmetric membership formula, and no complete two-equality construction is presently known (see \texttt{Errata.pdf}).
-
-\subsection{Relation to Three-Place Identity}
-
-Stereo equality can be viewed as a discrete, special case of three-place identity.
-
+Stereo equality is a discrete special case of three-place identity:
 \begin{enumerate}
-    \item \textbf{Monocular (1-place):} $x = y$ (classical identity). Sees only equivalence classes.
-    \item \textbf{Binocular (2-place):} $E_1(x, y)$ and $E_2(x, y)$. Sees depth and structure.
-    \item \textbf{Omnicular (3-place):} $x(y = z)$. The viewpoint $x$ varies continuously.
+    \item \textbf{Monocular (1-place):} $x = y$, classical identity --- sees only equivalence classes.
+    \item \textbf{Binocular (2-place):} $E_1(x, y)$ and $E_2(x, y)$ --- sees depth and structure.
+    \item \textbf{Omnicular (3-place):} $x(y = z)$ --- the viewpoint $x$ varies.
 \end{enumerate}
-
-Formally, a three-place identity $x(y=z)$ degenerates into a stereo equality if we restrict the viewpoint $x$ to just two fixed values, $x_1$ and $x_2$:
-\[
-E_1(y, z) := x_1(y=z) \quad \text{and} \quad E_2(y, z) := x_2(y=z)
-\]
-Conversely, stereo equality can be lifted to a three-place identity by using a selector function to toggle between $E_1$ and $E_2$.
+A three-place identity $x(y=z)$ restricts to a stereo equality at two fixed viewpoints $x_1, x_2$, via $E_1(y, z) := x_1(y=z)$ and $E_2(y, z) := x_2(y=z)$; conversely a stereo equality lifts to a three-place identity through a selector that toggles between $E_1$ and $E_2$.
 
 \section{The RCV Language Theorem}
 \label{app:rcv}
@@ -432,20 +419,16 @@ ZF set theory can be constructively defined in terms of an RCV language. This is
 If a Slang $S$ has the expressive power to define a global pairing predicate, then one can effectively construct its corresponding RCV language $I$.
 \end{theorem}
 
-\subsection{Relation to Stereo Equality}
+\subsection{The cell construction}
 
-The RCV language can be viewed as a ``trinocular'' extension of the Stereo Equality structure of Appendix~\ref{app:stereo}: Stereo Equality uses two independent equivalences ($E_1, E_2$), the RCV language three ($R, C, V$).
-
-\paragraph{Correction (\texttt{Errata.pdf}, Errata~1--4).} An earlier version of this section defined RCV membership by projecting onto two primitives,
-\[
-y \in_{RCV} x \iff \neg(R(y, x) \land C(y, x)),
-\]
-and asserted it satisfied the ZF axioms. That formula is \emph{symmetric} (an intersection of two equivalence relations is itself an equivalence relation), so it is \emph{not} a ZF membership; the claim is withdrawn. It also presupposed the two-equality reduction, which is the \emph{open} Stereo theorem (Appendix~\ref{app:stereo}), not an established result.
-
-Etter's actual RCV$\to$ZF membership is the \emph{cell construction} of \emph{The Expressive Power of Equality}\cite{etter_power}. A \emph{cell} is an ordered triple $\langle x, y, n\rangle$ with $x\,\varepsilon\,y$ and $n \in \{1, 2\}$, with value $\mathrm{Val}(\langle x, y, n\rangle) = x$ if $n = 1$ and $y$ otherwise; $R$, $C$, $V$ are the row, column, and value equalities on cells; and both $\mathrm{First}$ (first column) and membership are recovered from $R, C, V$ alone:
+Etter's RCV$\to$ZF membership is the \emph{cell construction} of \emph{The Expressive Power of Equality}\cite{etter_power}. A \emph{cell} is an ordered triple $\langle x, y, n\rangle$ with $x \,\varepsilon\, y$ and $n \in \{1, 2\}$, whose value is $\mathrm{Val}(\langle x, y, n\rangle) = x$ if $n = 1$ and $y$ otherwise. The predicates $R$, $C$, $V$ are the row, column, and value equalities on cells (same $\langle x, y\rangle$, same $n$, same value), with $V$ taken as identity. Both ``first column'' and membership are recovered from $R, C, V$ alone:
 \[ \mathrm{First}(c) \iff \forall d\,\exists e\,\bigl(V(e{=}d) \land C(e{=}c)\bigr), \]
 \[ c\,E\,d \iff \exists e, f\,\bigl(R(e{=}f) \land \mathrm{First}(e) \land V(c{=}e) \land \neg\mathrm{First}(f) \land V(d{=}f)\bigr). \]
-The argument-asymmetry carried by $\mathrm{First}/\neg\mathrm{First}$ is exactly what the symmetric intersection lacks. This construction is mechanized faithfully in \texttt{Cell.lean} over Mathlib's \texttt{ZFSet} (Etter's Theorems~1 and~2 are \texttt{first\_iff} and \texttt{mem\_iff}, with clean \texttt{\#print axioms}); \texttt{RCV.lean} then defines RCV membership as this $cEd$. RCV's sufficiency thus rests on the proved \emph{three}-equality construction, not on a projection onto two.
+The argument-asymmetry carried by $\mathrm{First}/\neg\mathrm{First}$ is what makes $cEd$ a directed membership. This construction is mechanized in \texttt{Cell.lean} over Mathlib's \texttt{ZFSet}: Etter's Theorems~1 and~2 are \texttt{first\_iff} and \texttt{mem\_iff}, with a clean \texttt{\#print axioms}, and \texttt{RCV.lean} defines RCV membership as this $cEd$.
+
+\subsection{Relation to stereo equality}
+
+The RCV language is a ``trinocular'' extension of the stereo structure of Appendix~\ref{app:stereo}: stereo equality uses two equalities, RCV three. The three-equality result is the proved cell construction above; whether \emph{two} equalities already suffice is the open Stereo Equality Conjecture of Appendix~\ref{app:stereo}.
 
 \end{appendices}
 \end{document}

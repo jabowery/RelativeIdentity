@@ -3,7 +3,7 @@ import UniversalityTheorem.Cell
 /-!
 # Appendix B: the RCV language and its ZF membership (corrected)
 
-Following Etter, *The Expressive Power of Equality* [E1] (see `Errata.pdf`, Errata 2 & 4),
+Following Etter, *The Expressive Power of Equality* [E1] (see `docs/Errata.pdf`, Errata 2 & 4),
 the three RCV equalities are the **row**, **column**, and **value** equalities `R`, `C`,
 `V` *on cells* (`UniversalityTheorem.Cell`) — not three arbitrary equivalence relations,
 and `V` is **not** unused. ZF membership is the cell membership `cEd` (`Cell.Mem`),
@@ -12,7 +12,7 @@ recovered by Theorem 1 (`Cell.first_iff`).
 
 This module is the RCV-language interface over the corrected construction. The previous
 contents — an abstract `RCVModel` whose membership reused the *symmetric* intersection
-`¬(R y x ∧ C y x)` and dropped `V` — were refuted in `Errata.pdf` and have been removed;
+`¬(R y x ∧ C y x)` and dropped `V` — were refuted in `docs/Errata.pdf` and have been removed;
 see `Stereo.Refutation` for the kernel-checked refutation.
 
 **Scope of what the kernel certifies here (a `No-oracle` note, per `AGENTS.md`).** The
