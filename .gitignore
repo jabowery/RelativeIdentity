@@ -1,0 +1,35 @@
+# Lean / Lake build output
+/.lake/
+/build/
+
+# Editor swap & backup files
+*.swp
+*.swo
+*~
+.*.swp
+.*.swo
+
+# LibreOffice / OpenOffice lock files
+.~lock.*#
+
+# LaTeX build intermediates (keep .tex sources and final .pdf)
+*.aux
+*.log
+*.out
+*.toc
+*.lof
+*.lot
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+*.bbl
+*.blg
+*.bcf
+*.run.xml
+*.nav
+*.snm
+*.vrb
+*.idx
+*.ilg
+*.ind
+texput.log

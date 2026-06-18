@@ -1,0 +1,451 @@
+\documentclass[11pt, a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{geometry}
+\usepackage{amsmath, amssymb, amsfonts, amsthm}
+\usepackage{parskip}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage[title, titletoc]{appendix}
+\usepackage[super]{cite}
+\usepackage[normalem]{ulem}     % if you want \uline (optional)
+\usepackage[dvipsnames]{xcolor}   % ← add this line
+
+\usepackage{hyperref}
+\usepackage{xurl}               % <-- Highly recommended!
+
+% Good modern setup
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    citecolor=blue,
+    urlcolor=blue!70!black,
+    pdfborder={0 0 0},          % no boxes around links
+}
+
+% Geometry settings
+\geometry{left=1in, right=1in, top=1in, bottom=1in}
+
+% Theorem environments
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{axiom}{Axiom}
+
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+% Custom commands
+\newcommand{\Id}{\mathsf{Id}}
+\newcommand{\Mem}{\mathsf{Mem}}
+\newcommand{\RI}{\mathcal{I}}
+\newcommand{\ZF}{\mathsf{ZF}}
+
+
+
+\title{The Universality of Thomas L. Etter's Three-Place Identity:\\A Formal Proof and Its Significance}
+\author{James Bowery}
+\date{2025-12-24}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+    We present a formal proof, mechanized in Lean 4, demonstrating that three-place relative identity\cite{quine} is expressively adequate for mathematics. Given any model of ZFC, we construct definitional bridges showing that membership can be derived from relative identity and vice versa, with the derived membership extensionally equivalent to the original.
+\begin{tabular}{|c|c|}
+\hline
+\textbf{ZFC} & \textbf{Etter} \\
+\hline
+$=$ primitive & $x = y \;:=\; (\forall z,\, z \in x \leftrightarrow z \in y) \land (\forall w,\, x \in w \leftrightarrow y \in w)$ \\
+\hline
+$\in$ primitive & $y \in x \;:=\; \neg\,\mathrm{Id}(x,y,x)$ \\
+\hline
+(none) & $Quine \mathrm{Id}(x,y,z)$ primitive \\
+\hline
+\end{tabular} \\
+    This establishes that ZFC can be faithfully reformulated using relative identity as the sole primitive relation. We discuss the philosophical significance of this result for foundations of mathematics.
+\end{abstract}
+
+\section{Introduction}
+
+The question of foundational primitives in mathematics has occupied logicians since Frege. The standard answer---that set membership $\in$ suffices as the sole primitive, with all mathematical objects reducible to sets---has proven technically successful but philosophically unsatisfying. As Benacerraf\cite{benacerraf} observed, the arbitrariness of set-theoretic encodings (why is $2 = \{\emptyset, \{\emptyset\}\}$ rather than $\{\{\emptyset\}\}$?) suggests that sets may not capture the essence of mathematical objects. Tom Etter\cite{etter_eq,etter_notes,etter_mem,etter_3pl} proposed a radical alternative: that \emph{identity}, not membership, is the true primitive. But not the two-place identity $x = y$ of classical logic, which Quine showed to be expressively impoverished. Rather, a \emph{three-place} relative identity $x(y = z)$, read ``$x$ regards $y$ as the same as $z$.''
+
+This paper presents a machine-verified proof that Etter's identity theory is \emph{universal}---"capable of expressing all of mathematics". The proof has been formalized in Lean 4.  The Lean4 source is available at \url{http://github.com/jabowery/RelativeIdentity}
+
+\emph{Terminological clarification}
+
+When we say that three-place relative identity is “sufficient to express all of mathematics,” we mean the axioms of ZFC can be formulated and faithfully interpreted using identity as the sole primitive, via definitional translations. This is merely relative interpretability in the usual logical sense. We do \emph{not} claim that the axioms of relative identity alone suffice to derive or model ZFC. The present result establishes \emph{expressive} adequacy and interpretability, not \emph{foundational} sufficiency in the model-theoretic sense.
+
+\section{Three-Place Relative Identity}
+
+\begin{definition}[Relative Identity Structure]
+A \emph{relative identity structure} on a type $U$ consists of a ternary predicate $\Id : U \to U \to U \to \mathsf{Prop}$ satisfying:
+\begin{enumerate}[label=(\roman*)]
+    \item \textbf{Reflexivity:} $\forall x\, y.\; \Id(x, y, y)$
+    \item \textbf{Symmetry:} $\forall x\, y\, z.\; \Id(x, y, z) \to \Id(x, z, y)$
+    \item \textbf{Transitivity:} $\forall x\, y\, z\, w.\; \Id(x, y, z) \land \Id(x, z, w) \to \Id(x, y, w)$
+\end{enumerate}
+\end{definition}
+
+The axioms assert that for each fixed ``viewpoint'' $x$, the relation $\Id(x, -, -)$ is an equivalence relation on the remaining arguments. This is weaker than requiring a single global equivalence: different viewpoints may identify different things.
+
+\begin{remark}
+The philosophical reading is: $x(y = z)$ means ``from $x$'s perspective, $y$ and $z$ are indistinguishable in the way that matters.'' This generalizes Quine's insight that identity within a formal language is indistinguishability with respect to that language's predicates.
+\end{remark}
+
+\section{The Two Bridges}
+
+The proof of universality rests on two definitional bridges between identity and membership.
+
+\begin{definition}[D1: Membership from Identity]
+Given a relative identity structure $\RI$, define:
+\[
+y \in' x \;\stackrel{\text{def}}{=}\; \neg\, \Id(x, y, x)
+\]
+That is, $y$ exists for $x$ (is a member of $x$) when $x$ regards $y$ as \emph{different from itself}.
+\end{definition}
+
+The philosophical content is striking: existence is derived from distinguishability from non-existence. The viewpoint $x$ serves as a kind of ``ontological origin''---what exists for $x$ is precisely what $x$ distinguishes from the undifferentiated background (represented by $x$ itself).
+
+\begin{definition}[D2: Identity from Membership]
+Given a membership relation $\in$, define:
+\[
+\Id_\in(x, y, z) \;\stackrel{\text{def}}{=}\; (y \in x \land z \in x) \lor (\neg y \in x \land \neg z \in x)
+\]
+That is, $x$ regards $y$ and $z$ as identical when they have the same membership status with respect to $x$.
+\end{definition}
+
+\section{The Main Theorems}
+
+\begin{theorem}[D2 Preserves Identity Structure]
+\label{thm:d2-preserves}
+For any membership relation $\in$ on $U$, the induced $\Id_\in$ satisfies the relative identity axioms.
+\end{theorem}
+
+\begin{proof}
+We verify each axiom:
+
+\textbf{Reflexivity:} For any $x, y$, either $y \in x$ or $\neg y \in x$. In the first case, $y \in x \land y \in x$ holds; in the second, $\neg y \in x \land \neg y \in x$ holds. Either way, $\Id_\in(x, y, y)$.
+
+\textbf{Symmetry:} Immediate from the symmetry of $\land$ and $\lor$.
+
+\textbf{Transitivity:} Suppose $\Id_\in(x, y, z)$ and $\Id_\in(x, z, w)$. We case-split:
+\begin{itemize}
+    \item If $y \in x \land z \in x$: From $\Id_\in(x, z, w)$ with $z \in x$, we cannot have $\neg z \in x$, so $z \in x \land w \in x$. Thus $y \in x \land w \in x$.
+    \item If $\neg y \in x \land \neg z \in x$: From $\Id_\in(x, z, w)$ with $\neg z \in x$, we cannot have $z \in x$, so $\neg z \in x \land \neg w \in x$. Thus $\neg y \in x \land \neg w \in x$.
+\end{itemize}
+In both cases, $\Id_\in(x, y, w)$.
+\qed
+\end{proof}
+
+\begin{theorem}[Round-Trip Equivalence]
+\label{thm:roundtrip}
+Let $\in$ be a membership relation satisfying the Irreflexivity of membership axiom ($\forall x.\, \neg x \in x$). Let $\RI = \Id_\in$ be the induced identity structure, and let $\in'$ be the membership derived from $\RI$ via D1. Then:
+\[
+\forall y\, x.\; y \in' x \iff y \in x
+\]
+\end{theorem}
+
+\begin{proof}
+Expanding definitions:
+\begin{align*}
+y \in' x &\iff \neg\, \Id_\in(x, y, x) \\
+&\iff \neg\, [(y \in x \land x \in x) \lor (\neg y \in x \land \neg x \in x)]
+\end{align*}
+
+By Irreflexivity of membership, $\neg x \in x$. Thus $y \in x \land x \in x$ is false, and $\neg x \in x$ is true. The expression simplifies to:
+\begin{align*}
+&\iff \neg\, [\mathsf{false} \lor (\neg y \in x \land \mathsf{true})] \\
+&\iff \neg\, (\neg y \in x) \\
+&\iff y \in x
+\end{align*}
+\qed
+\end{proof}
+
+\begin{theorem}[Universality Theorem]
+\label{thm:universality}
+Identity theory is open-ended: the $\ZF$ axioms expressed in terms of derived membership $\in'$ are consistent with the relative identity axioms.
+\end{theorem}
+
+\begin{proof}
+Let $M$ be a model of $\ZF$ with membership $\in_M$. By Theorem~\ref{thm:d2-preserves}, $\Id_{\in_M}$ is a relative identity structure. By Theorem~\ref{thm:roundtrip}, the derived membership $\in'$ is logically equivalent to $\in_M$. Therefore, any $\ZF$ axiom true of $\in_M$ is equally true of $\in'$. Since the $\ZF$ axioms are consistent (by assumption) and the identity axioms are satisfied by construction, their conjunction is consistent. Since $\ZF$ is a universal foundation for mathematics, identity theory augmented with the $\ZF$ axioms on derived membership can express all of mathematics.
+\qed
+\end{proof}
+
+\section{Formalization in Lean 4}
+
+The proof has been mechanized in Lean 4. The key definitions are:
+
+\begin{verbatim}
+structure RelativeIdentity (U : Type u) where
+  Id : U → U → U → Prop
+  refl : ∀ x y : U, Id x y y
+  symm : ∀ x y z : U, Id x y z → Id x z y
+  trans : ∀ x y z w : U, Id x y z → Id x z w → Id x y w
+
+def MemFromId (RI : RelativeIdentity U) (y x : U) : Prop :=
+  ¬ RI.Id x y x
+
+def IdFromMem (mem : U → U → Prop) (x y z : U) : Prop :=
+  (mem y x ∧ mem z x) ∨ (¬ mem y x ∧ ¬ mem z x)
+\end{verbatim}
+
+The round-trip theorem is proved using the \texttt{tauto} tactic after unfolding definitions and introducing the Irreflexivity of membership hypothesis:
+
+\begin{verbatim}
+theorem ZFModel_roundtrip (M : ZFModel U) (y x : U) :
+    Mem'_from_ZFModel M y x ↔ M.mem y x := by
+  unfold Mem'_from_ZFModel MemFromId RelativeIdentity_from_ZFModel
+  unfold IdFromMem_is_RelativeIdentity IdFromMem
+  simp only
+  have nxx : ¬ M.mem x x := M.foundation x
+  tauto
+\end{verbatim}
+
+\section{Philosophical Significance}
+
+\subsection{Identity Precedes Existence}
+
+Gian-Carlo Rota's slogan ``Identity precedes existence''\cite{rota} receives rigorous content through Etter's construction. The traditional view takes existence as primitive: things first exist, then we ask whether they are identical. Etter inverts this: identity (from a viewpoint) is primitive, and existence is derived as distinguishability from non-existence. Definition D1 makes this precise: $y$ exists for $x$ exactly when $x$ distinguishes $y$ from itself-as-null-viewpoint. Existence is not an absolute property but a relational one---to exist is to exist \emph{for} some perspective.
+
+\subsection{The Relativity of Ontology}
+
+Classical set theory posits a single, absolute universe of sets. Etter's framework suggests a more perspectival ontology: what exists depends on the viewpoint. Different ``observers'' $x$ may recognize different entities as existing.
+
+This resonates with developments in:
+\begin{itemize}
+    \item \textbf{Quantum mechanics:} The observer-dependence of measurement outcomes
+    \item \textbf{Constructive mathematics:} Existence requiring a construction, not just non-contradiction
+    \item \textbf{Category theory:} Objects defined only up to isomorphism, with identity structure-dependent
+\end{itemize}
+
+\subsection{Connection to Quine's Role Identities}
+
+Quine showed that identity within a formal language $L$ can be defined as the conjunction of all ``role identities''---the indistinguishability relations induced by each predicate position. Etter's three-place identity generalizes this by making the language/viewpoint itself a variable. We proved:
+\[
+\Id_\in(x, y, z) \iff (y \in x \leftrightarrow z \in x)
+\]
+This shows that $\Id_\in$ is exactly the Quine identity for the predicate $\lambda w.\, w \in x$. The viewpoint $x$ determines which predicate is relevant for identity.
+
+\subsection{Mathematics Without Sets?}
+
+The Universality Theorem does not eliminate sets---it shows they can be \emph{derived} from identity. This is analogous to how Dedekind derived real numbers from rationals: the reals don't disappear, but their foundational status changes. The philosophical gain is conceptual economy: instead of two primitive notions (membership and identity), we need only one (relative identity). The loss of absolute identity may be a feature, not a bug, for those troubled by puzzles of identity through time, across possible worlds, or in quantum contexts.
+
+\section{Coordinating Relative Identities}
+
+Distinguishing identities and relating them are already familiar from standard logic. Predicate calculus distinguishes objects by the predicates they satisfy, and it relates those objects by logical structure among predicates. What it does \emph{not} provide is a principled way to \emph{coordinate} multiple, independent identity judgments into a single, coherent mathematical structure. Three-place relative identity supplies exactly this missing capability.
+
+\subsection{Identity as an Indexed Equivalence Relation}
+
+A relative identity structure assigns to each viewpoint $x$ an equivalence relation $\Id(x,-,-)$. Identity is therefore not a single global relation, but a family of equivalence relations indexed by objects of the domain itself. This indexing is crucial. It means that:
+\begin{itemize}
+    \item different viewpoints may induce different partitions of the same universe;
+    \item these partitions coexist on a common underlying domain;
+    \item identity judgments made from one viewpoint can be systematically compared with those made from another.
+\end{itemize}
+
+The act of \emph{coordinating identities} consists precisely in aligning these multiple equivalence relations so that structure can be transferred across viewpoints.
+
+\subsection{Coordination and Mathematical Structure}
+
+Mathematical structure arises not merely from classification, but from the ability to \emph{use multiple classifications together}. Examples familiar from standard mathematics include:
+\begin{itemize}
+    \item ordered pairs, which coordinate two independent dimensions of identity;
+    \item relations, which coordinate identities across domains;
+    \item functions, which coordinate identities in a source with identities in a target;
+    \item isomorphism, which coordinates identity judgments across different structures.
+\end{itemize}
+
+None of these constructions are possible with a single equivalence relation alone. They require multiple, independently meaningful notions of ``sameness'' that can be brought into alignment. Relative identity provides this alignment intrinsically: different viewpoints $x$ act as selectors of identity criteria, and mathematics proceeds by coordinating the resulting equivalence structures.
+
+\subsection{Stereo Equality as a Discrete Case}
+
+The Appendix makes this especially clear in the case of \emph{stereo equality}. Two independent equivalence relations $E_1$ and $E_2$ already suffice to generate structure that a single equivalence relation cannot: ordered pairs, relations, and membership-like behavior. Stereo equality may be viewed as a discrete approximation to three-place identity:
+\begin{itemize}
+    \item a single equality is monocular;
+    \item two equalities provide binocular depth;
+    \item three-place identity allows a continuous family of perspectives.
+\end{itemize}
+
+What matters is not the number three \emph{per se}, but the availability of multiple, coordinatable identity dimensions.
+
+\subsection{Coordination Replaces Primitive Membership}
+
+From this perspective, set membership is not fundamental. Membership is simply one way of coordinating identity judgments: an object $y$ is a member of $x$ exactly when $x$ distinguishes $y$ from itself under its identity criterion. Thus, mathematics does not require a primitive notion of ``being an element of.'' It requires only enough structure to:
+\begin{enumerate}
+    \item distinguish identities,
+    \item relate them logically,
+    \item coordinate them across perspectives.
+\end{enumerate}
+
+Three-place relative identity supplies all three.
+
+\section{Future Directions}
+
+Several extensions suggest themselves:
+
+\begin{enumerate}
+    \item \textbf{Non-well-founded variants:} The proof uses Irreflexivity of membership essentially. What happens with non-well-founded set theories (Aczel's AFA)?
+    \item \textbf{Categorical semantics:} Three-place identity suggests a kind of ``indexed equivalence relation.'' This may connect to fibered categories or dependent type theory.
+    \item \textbf{Quantum logic:} Etter hints at connections to von Neumann's quantum logic. Formalizing this could yield new insights into the foundations of quantum mechanics.
+\end{enumerate}
+
+\section{Conclusion}
+
+We have presented a machine-verified proof that three-place relative identity is foundationally universal. The key insight is the mutual interpretability between identity and membership through two simple definitions. The philosophical upshot is that identity---understood as perspective-relative indistinguishability---may be a more fundamental notion than existence or membership. As Etter wrote: ``The statement `$x(y=z)$' is in effect a third-person statement... in order to understand `$x$ regards $y$ as the same as $z$' I must understand what it means for \emph{me} to think `$y$ and $z$ are the same' and then put myself in $x$'s shoes.'' Identity theory brings the subject into the foundations of mathematics.
+
+\section*{Acknowledgments}
+
+This formalization builds on Tom Etter's never-published papers, primarily ``Three-place Identity'' and ``Equalities and Quine Identities,'' developed at the Boundary Institute. The Lean formalization uses the Mathlib library\cite{mathlib}. Coding assistance and reviews were provided by the least expensive tier of the 4 major large language modes available during late 2025 (in no particular order): ChatGPT, Claude, Gemini and Grok.
+
+\begin{thebibliography}{9}
+
+\bibitem{quine}
+Quine WVO. The Scope of Logic. In: Philosophy of Logic. Harvard University Press; 1986.
+
+\bibitem{benacerraf}
+Benacerraf P. What Numbers Could Not Be. Philosophical Review. 1965;74:47–73.
+
+\bibitem{etter_eq}
+    Etter T. Equalities and Quine Identities, Sections 1--6 [Internet; received and attested by author]. Boundary Institute; 2001. Available from \url{https://groups.io/g/lawsofform/files/Boundary%20Institute/Tom%20Etter%20Papers/Equality%20and%20Quine%20IDs%20s1-6.pdf}
+
+\bibitem{etter_notes}
+    Etter T. Notes on Identity and Pairing. [Internet; received and attested by author]; 2001. Available from \url{https://groups.io/g/lawsofform/files/Unpublished%20Tom%20Etter%20Papers%20Not%20Provided%20by%20Boundary%20Institute/Notes%20on%20Identity%20and%20Pairing.pdf}
+
+\bibitem{etter_mem}
+    Etter T. Membership and Identity [Internet]. Boundary Institute; 2006. Available from: \url{https://web.archive.org/web/20150925072222/http://www.boundaryinstitute.org/bi/articles/Membership_&_Identity.pdf}
+
+\bibitem{etter_3pl}
+    Etter T. Three-place Identity [Internet]. Boundary Institute; 2006. Available from: \url{https://web.archive.org/web/20150925072222/http://www.boundaryinstitute.org/bi/articles/Three-place_Identity.pdf}
+
+\bibitem{etter_power}
+    Etter T. The Expressive Power of Equality [Internet; received and attested by author]. Boundary Institute; 20 June 2001. (Contains the cell construction and the proof of the RCV$\to$ZF expressiveness theorem.)
+
+\bibitem{rota}
+Rota GC. The Primacy of Identity. In: Indiscrete Thoughts. Birkh\"auser; 1997.
+
+\bibitem{mathlib}
+    The Mathlib Community. Mathlib: The Lean Mathematical Library [Internet]. Available from: \url{https://github.com/leanprover-community/mathlib4}
+
+\end{thebibliography}
+
+\clearpage
+\begin{appendices}
+\section{The Stereo Equality Theorem}
+\label{app:stereo}
+
+While the main body of this paper focuses on the general three-place identity $x(y=z)$, Etter also proposed a discrete simplification known as the \emph{Stereo Equality Theorem}, which claims that two independent equality predicates, taken together, already have sufficient expressivity for ZFC.
+
+\paragraph{Status (checked against the primary sources; see \texttt{Errata.pdf}).} Unlike the \emph{three}-equality RCV result of Appendix~\ref{app:rcv} --- fully proved by Etter's cell construction in \emph{The Expressive Power of Equality}\cite{etter_power} and mechanized in \texttt{Cell.lean} --- this \emph{two}-equality theorem is \emph{not} a finished theorem in Etter's surviving papers. \emph{Three-place Identity}\cite{etter_3pl} states it informally and defers its proof to Section~3 of \emph{Membership and Identity}\cite{etter_mem}; but the surviving M\&I draft develops the requisite machinery (intrinsic identity, \emph{division}, \emph{Other}) and then breaks off before stating or proving it --- its Section~3 ends with a bare, unproved theorem and Section~4 is an outline, and R.~Shoup notes the paper was never completed. The only concrete construction Etter gives is the \emph{link sketch} of \cite{etter_3pl}, footnote~5: an equality \emph{without transitivity} $[x{=}y]$ (reflexive and symmetric only), a ``meet'' operator $[x =: y,z,\dots]$ (``$x$ equals each of $y,z,\dots$, and anything unequal to $y$ is unequal to $x$, ditto $z$''), and a link membership
+\[ x \in' y \;:=\; \exists\, x',x'',y',y'',q,q',q''.\; [q{=:}x,q'] \;\&\; [q'{=:}y,q,q''] \;\&\; [x'{=:}x,x''] \;\&\; [x''{=:}x,x'] \;\&\; [y'{=:}y,y''] \;\&\; [y''{=:}y,y'], \]
+together with the conjecture that ``there is a set model of $[x{=}y]$ such that $x\in'y$ is membership in a set model of set theory.'' Accordingly \texttt{Stereo.lean} does \emph{not} assert a theorem: it transcribes these definitions faithfully (\texttt{WeakEq}, \texttt{Meet}, \texttt{MemPrime}) and states the result as a precise, falsifiable \texttt{Prop} --- \texttt{etterStereoConjecture}, carrying no \texttt{sorry} --- intended as the subject of a future paper that proves or refutes it in Lean.
+
+\subsection{The Stereo Structure}
+
+A single equality predicate satisfying reflexivity, symmetry, and transitivity is expressively dead-ended; it can only distinguish equivalence classes. However, by introducing \emph{two} such predicates, $E_1$ and $E_2$, we gain the ``binocular depth'' necessary to encode structure.
+
+We define a \emph{Stereo Equality} structure on a type $U$ as:
+\begin{definition}[Stereo Equality]
+A structure consisting of two independent equivalence relations $E_1$ and $E_2$ on $U$.
+\end{definition}
+
+\subsection{Derived Membership and Irreflexivity of membership}
+
+Just as with three-place identity, we can derive a membership relation from stereo equality. The intuition is that an object $y$ is a member of $x$ if $x$ ``distinguishes'' $y$ from itself in a stereo sense.
+
+\begin{definition}[Stereo Membership]
+Given a stereo equality structure $(E_1, E_2)$, we define membership $\in'$ as:
+\[
+y \in' x \iff \neg(E_1(y, x) \land E_2(y, x))
+\]
+\end{definition}
+
+\paragraph{Correction (\texttt{Errata.pdf}, Errata~1--2).} This intersection formula is the present author's reconstruction; it does \emph{not} occur in Etter's papers. Because $E_1$ and $E_2$ are equivalence relations (hence symmetric), the relation is \emph{symmetric}: $y \in' x \iff x \in' y$ (proved in \texttt{Stereo.Refutation.stereoMem\_symm}). ZF membership is not symmetric ($\emptyset \in \{\emptyset\}$ but $\{\emptyset\} \notin \emptyset$), so this $\in'$ \emph{cannot} be a ZF membership. The irreflexivity result below is valid \emph{for this definition}, but it establishes no further ZF axiom; the correct two-equality membership (if it exists) is the open problem noted above.
+
+A crucial result is that this derived membership automatically satisfies the Axiom of Irreflexivity of membership.
+
+\begin{theorem}[Stereo Irreflexivity of membership]
+For any $x \in U$, $\neg(x \in' x)$.
+\end{theorem}
+\begin{proof}
+By definition, $x \in' x \iff \neg(E_1(x, x) \land E_2(x, x))$. Since $E_1$ and $E_2$ are equivalence relations, they are reflexive. Thus $E_1(x, x)$ and $E_2(x, x)$ are always true. Therefore, $\neg(\mathsf{true} \land \mathsf{true})$ is false, so $x \notin' x$.
+\end{proof}
+
+\subsection{Encoding Ordered Pairs}
+
+The expressive power of stereo equality lies in its ability to encode ordered pairs, which is impossible with a single equality. We can view $E_1$ as encoding ``position 1'' information and $E_2$ as encoding ``position 2''. An ordered pair $\langle x, y \rangle$ can be encoded by a ``link'' object $q$ that connects $x$ and $y$ through the two dimensions:
+\[
+\exists q.\; E_1(q, x) \land (\exists q'.\; E_1(q, q') \land E_2(q', y))
+\]
+This link is the ordered-pair mechanism Etter intended for the two-equality case. That it suffices to build full ZF set theory is precisely the \emph{open} Stereo Equality Theorem stated above; it is \emph{not} established by the symmetric membership formula, and no complete two-equality construction is presently known (see \texttt{Errata.pdf}).
+
+\subsection{Relation to Three-Place Identity}
+
+Stereo equality can be viewed as a discrete, special case of three-place identity.
+
+\begin{enumerate}
+    \item \textbf{Monocular (1-place):} $x = y$ (classical identity). Sees only equivalence classes.
+    \item \textbf{Binocular (2-place):} $E_1(x, y)$ and $E_2(x, y)$. Sees depth and structure.
+    \item \textbf{Omnicular (3-place):} $x(y = z)$. The viewpoint $x$ varies continuously.
+\end{enumerate}
+
+Formally, a three-place identity $x(y=z)$ degenerates into a stereo equality if we restrict the viewpoint $x$ to just two fixed values, $x_1$ and $x_2$:
+\[
+E_1(y, z) := x_1(y=z) \quad \text{and} \quad E_2(y, z) := x_2(y=z)
+\]
+Conversely, stereo equality can be lifted to a three-place identity by using a selector function to toggle between $E_1$ and $E_2$.
+
+\section{The RCV Language Theorem}
+\label{app:rcv}
+
+In ``Notes on Identity and Pairing,'' Etter introduces a canonical class of languages known as RCV languages. These languages serve as a universal basis for his identity theory, asserting that even complex logical systems can be reduced to three specific identity predicates.
+
+\subsection{Definitions}
+
+\begin{definition}[Slang]
+A \emph{Slang} (Standard Language) is defined as the predicate calculus augmented with a finite list of primitive predicates, containing no terms other than variables.
+\end{definition}
+
+\begin{definition}[RCV Language]
+An \emph{RCV Language} is a Slang $I$ whose only primitive predicates are three global identity predicates, denoted as:
+\[
+R(x=y), \quad C(x=y), \quad \text{and} \quad V(x=y)
+\]
+\end{definition}
+
+\subsection{Theorems}
+
+The significance of RCV languages lies in their universality and their ability to constructively generate set theory.
+
+\begin{theorem}[RCV Reduction]
+Any Slang $S$ is a list variant of an RCV language $I$. That is, any standard language can be transformed into an RCV language effectively by reordering predicates.
+\end{theorem}
+
+\begin{theorem}[Constructibility of ZF]
+ZF set theory can be constructively defined in terms of an RCV language. This is Etter's expressiveness theorem, proved in full in \emph{The Expressive Power of Equality}\cite{etter_power} by the cell construction (below) and mechanized in \texttt{Cell.lean}.
+\end{theorem}
+
+\begin{theorem}[Equivalence to Pairing]
+If a Slang $S$ has the expressive power to define a global pairing predicate, then one can effectively construct its corresponding RCV language $I$.
+\end{theorem}
+
+\subsection{Relation to Stereo Equality}
+
+The RCV language can be viewed as a ``trinocular'' extension of the Stereo Equality structure of Appendix~\ref{app:stereo}: Stereo Equality uses two independent equivalences ($E_1, E_2$), the RCV language three ($R, C, V$).
+
+\paragraph{Correction (\texttt{Errata.pdf}, Errata~1--4).} An earlier version of this section defined RCV membership by projecting onto two primitives,
+\[
+y \in_{RCV} x \iff \neg(R(y, x) \land C(y, x)),
+\]
+and asserted it satisfied the ZF axioms. That formula is \emph{symmetric} (an intersection of two equivalence relations is itself an equivalence relation), so it is \emph{not} a ZF membership; the claim is withdrawn. It also presupposed the two-equality reduction, which is the \emph{open} Stereo theorem (Appendix~\ref{app:stereo}), not an established result.
+
+Etter's actual RCV$\to$ZF membership is the \emph{cell construction} of \emph{The Expressive Power of Equality}\cite{etter_power}. A \emph{cell} is an ordered triple $\langle x, y, n\rangle$ with $x\,\varepsilon\,y$ and $n \in \{1, 2\}$, with value $\mathrm{Val}(\langle x, y, n\rangle) = x$ if $n = 1$ and $y$ otherwise; $R$, $C$, $V$ are the row, column, and value equalities on cells; and both $\mathrm{First}$ (first column) and membership are recovered from $R, C, V$ alone:
+\[ \mathrm{First}(c) \iff \forall d\,\exists e\,\bigl(V(e{=}d) \land C(e{=}c)\bigr), \]
+\[ c\,E\,d \iff \exists e, f\,\bigl(R(e{=}f) \land \mathrm{First}(e) \land V(c{=}e) \land \neg\mathrm{First}(f) \land V(d{=}f)\bigr). \]
+The argument-asymmetry carried by $\mathrm{First}/\neg\mathrm{First}$ is exactly what the symmetric intersection lacks. This construction is mechanized faithfully in \texttt{Cell.lean} over Mathlib's \texttt{ZFSet} (Etter's Theorems~1 and~2 are \texttt{first\_iff} and \texttt{mem\_iff}, with clean \texttt{\#print axioms}); \texttt{RCV.lean} then defines RCV membership as this $cEd$. RCV's sufficiency thus rests on the proved \emph{three}-equality construction, not on a projection onto two.
+
+\end{appendices}
+\end{document}

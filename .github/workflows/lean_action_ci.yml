@@ -1,0 +1,21 @@
+name: Lean Action CI
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v5
+      # Fail fast with a clear message if an imported module was left untracked.
+      - name: Verify all imported modules are tracked
+        run: bash scripts/verify_tracked.sh
+      - uses: leanprover/lean-action@v1
+      # Regression guard: every key result must be axiom-clean except the one
+      # intentionally-open two-equality theorem (see docs/AxiomAudit.md).
+      - name: Axiom audit (no unexpected sorry)
+        run: bash scripts/audit_check.sh

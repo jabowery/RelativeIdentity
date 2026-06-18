@@ -18,7 +18,7 @@ This Lean 4 project proves the **Universality Theorem** for **Relative Identity*
 /-!
 ## 4. The Universality Theorem
 -/
-UniversalityTheorem.Universality.slang_universality_ZFC
+UniversalityTheorem.slang_universality_ZFC
 ```
 
 ## Quick Start (for users unfamiliar with Lean 4)
@@ -64,13 +64,43 @@ lake build
 
 ## Project Structure
 
+The development is multi-module; `UniversalityTheorem.lean` is an aggregator that imports
+the library modules.
+
 | File | Purpose |
 | :--- | :--- |
-| `UniversalityTheorem.lean` | Main source file containing the theorem statement and proof. |
+| `UniversalityTheorem.lean` | Aggregator: imports all library modules below. |
+| `UniversalityTheorem/Universality.lean` | **Main body.** The Universality Theorem `slang_universality_ZFC` and the round-trip core (Etter, *Three-place Identity*). |
+| `UniversalityTheorem/EtterEq.lean` | Relative-identity structures and Etter equality. |
+| `UniversalityTheorem/Scaffold.lean` | Slang scaffolding layer (used by `Progress`). |
+| `UniversalityTheorem/Progress.lean` | Sanity checks that key declarations are complete. |
+| `UniversalityTheorem/Stereo.lean` | **Appendix A.** The refuted symmetric reconstruction + its kernel-checked refutation (`Refutation`); a faithful transcription of Etter's [E3 fn.5] link construction (`WeakEq`, `Meet`, `MemPrime`); and the two-equality result stated as a precise **conjecture** `etterStereoConjecture : Prop` (not a theorem, no `sorry`). |
+| `UniversalityTheorem/Cell.lean` | **Appendix B.** Etter's cell construction over `ZFSet` (*The Expressive Power of Equality*): Theorems 1 & 2 (`first_iff`, `mem_iff`) — the corrected RCV→ZF membership. |
+| `UniversalityTheorem/RCV.lean` | RCV-language interface over `Cell`: `Mem_RCV := cEd`, with definability and ZF-property theorems. |
 | `lakefile.toml` | Lake build configuration (package name, dependencies, etc.). |
 | `lean-toolchain` | Specifies the exact Lean 4 version to use. |
 | `lake-manifest.json` | Auto-generated record of exact dependency versions (do not edit). |
 | `README.md` | This file. |
+
+## Status and corrections
+
+The main body (Definitions D1/D2, Theorems 4.1–4.3, the round-trip, and the "universality"
+claim) is correct and stands. The **appendix** constructions were corrected after checking
+against Etter's primary sources:
+
+- [`Errata.pdf`](Errata.pdf) — the corrections: the appendices' `¬(E1 ∧ E2)` / `¬(R ∧ C)`
+  membership is *symmetric* and is **not** a ZF membership; Etter's actual RCV→ZF route is
+  the cell construction of *The Expressive Power of Equality*, now mechanized in `Cell.lean`.
+- [`ROADMAP.md`](ROADMAP.md) — the plan and status of the correction work, phase by phase.
+- [`AGENTS.md`](AGENTS.md) — the proof discipline this repo follows (no load-bearing claim
+  in natural language; every key result is `#print axioms`-audited).
+
+The development is **`sorry`-free**. The two-equality "Stereo Equality Theorem" is *not* a
+finished theorem in Etter's surviving papers — *Membership and Identity* develops the
+machinery and breaks off before proving it — so rather than dress it up as a Lean `theorem`,
+we transcribe Etter's [E3 fn.5] link construction faithfully and state the result as a
+precise, falsifiable conjecture `Stereo.etterStereoConjecture : Prop`. It is the intended
+subject of a future paper that proves it or refutes it in Lean.
 
 ## Common Lake Commands
 

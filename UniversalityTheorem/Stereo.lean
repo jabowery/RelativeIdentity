@@ -1,5 +1,6 @@
 import Mathlib.Logic.Relation
 import Mathlib.Tactic
+import Mathlib.SetTheory.ZFC.Basic
 
 namespace UniversalityTheorem
 namespace Stereo
@@ -8,10 +9,18 @@ universe u
 variable {U : Type u}
 
 /-!
-## Appendix A: The Stereo Equality Theorem
+## Appendix A: The Stereo Equality construction  ⚠ REFUTED MEMBERSHIP
 
-As described in the paper, Stereo Equality consists of two independent
-equivalence relations E1 and E2 on a domain U.
+A Stereo structure is two independent equivalence relations `E1`, `E2` on `U`.
+
+**Provenance / status — see `Errata.pdf` (Errata 1, 2, 4).**
+The membership `StereoMem y x := ¬(E1 y x ∧ E2 y x)` defined below is the *present
+author's reconstruction*; it does **not** occur in Etter's papers. It is **symmetric**
+(proved in `Refutation.stereoMem_symm`), and ZF membership is not symmetric
+(`∅ ∈ {∅}` but `{∅} ∉ ∅`), so it **cannot** be a ZF membership. Etter's actual RCV→ZF
+membership is the cell construction of *The Expressive Power of Equality* [E1], to be
+mechanized in `RCV.lean`. The other lemmas here (irreflexivity, the link lemmas) are
+individually true but establish **no** ZF axiom; they must not be cited as doing so.
 -/
 
 /-- A Stereo Equality structure consisting of two independent equivalence relations. -/
@@ -22,12 +31,47 @@ structure StereoModel (U : Type u) where
   equiv2 : Equivalence E2
 
 /-!
-### 1. Derived Membership
-Definition from Appendix A.2:
-y ∈' x iff ¬(E1(y, x) ∧ E2(y, x))
+### 1. The reconstructed membership (refuted — see `Refutation` below)
+`y ∈' x  :⇔  ¬(E1 y x ∧ E2 y x)`.
 -/
 def StereoMem (S : StereoModel U) (y x : U) : Prop :=
   ¬ (S.E1 y x ∧ S.E2 y x)
+
+/-!
+### Refutation: this membership is symmetric, hence not a ZF membership
+
+Per `AGENTS.md` ("Red tests"): we do not rely on *failing* to prove the bad thing — we
+*prove* it. The discriminating defect named in Erratum 1 is symmetry; we prove it, then
+derive the resulting contradiction with the existence of an empty set.
+-/
+namespace Refutation
+
+/-- **Red test (Erratum 1).** The reconstructed membership is *symmetric*, because `E1`
+and `E2` are equivalence relations. This is the property the appendix never stated. -/
+theorem stereoMem_symm (S : StereoModel U) (a b : U) :
+    StereoMem S a b ↔ StereoMem S b a := by
+  unfold StereoMem
+  constructor <;> intro h hcon <;>
+    exact h ⟨S.equiv1.symm hcon.1, S.equiv2.symm hcon.2⟩
+
+/-- No **symmetric** relation can be a ZF membership: ZF proves `∅ ∈ {∅}` while `∅` is
+empty, so symmetry would force `{∅} ∈ ∅`. Abstractly, a symmetric relation admits no
+element that is simultaneously a member of something and itself empty. -/
+theorem symm_mem_no_empty_member
+    (Mem : U → U → Prop) (symm : ∀ x y, Mem x y → Mem y x)
+    (a s : U) (mem_a_s : Mem a s) (a_empty : ∀ x, ¬ Mem x a) : False :=
+  a_empty s (symm a s mem_a_s)
+
+/-- **Red test (Erratum 1, conclusion).** `StereoMem` therefore cannot be a ZF
+membership: an "empty" set that is itself a member yields `False`. ZF requires exactly
+this configuration (`∅ ∈ {∅}` with `∅` empty), so `StereoMem` is refuted as a ZF
+membership for every Stereo model. -/
+theorem stereoMem_not_ZF (S : StereoModel U)
+    (a s : U) (mem_a_s : StereoMem S a s) (a_empty : ∀ x, ¬ StereoMem S x a) : False :=
+  symm_mem_no_empty_member (StereoMem S)
+    (fun x y h => (stereoMem_symm S x y).mp h) a s mem_a_s a_empty
+
+end Refutation
 
 /-!
 ### 2. Proof of Irreflexivity
@@ -94,6 +138,83 @@ theorem link_determines_x (S : StereoModel U) (q x x' y y' : U) :
   -- Use symmetry and transitivity of E1 to show x ~ x'
   -- x ~ q (symm) and q ~ x' (direct) implies x ~ x'
   apply S.equiv1.trans (S.equiv1.symm hqx) hqx'
+
+/-!
+## The Stereo Equality "Theorem" — an unfinished Etter conjecture, stated for future work
+
+**Status (checked against the primary sources; see `Errata.pdf` Erratum 3).** The
+**three**-equality RCV→ZF result is complete and proved (`RCV.mem_RCV_definable`, via
+`Cell`). The **two**-equality "Stereo Equality Theorem" is *not* a theorem in Etter's
+surviving papers. *Three-place Identity* [E3, §3] states it informally and says the proof is
+"in Section 3 of *Membership and Identity* [E2]" — but the surviving M&I draft develops the
+machinery (intrinsic identity, *division*, *Other*) and then **breaks off** before stating
+or proving it (M&I p. 17 is a bare unproved theorem; §4 is a stub; R. Shoup notes the paper
+was never completed). So there is no finished Etter statement to transcribe.
+
+The only concrete construction Etter gives is the **link sketch of [E3, fn. 5]**, transcribed
+faithfully below as `def`initions and assembled into a precise, falsifiable **conjecture**
+(`etterStereoConjecture : Prop`). It is deliberately **not** a Lean `theorem` and carries no
+`sorry`: it is a stated proposition — the intended subject of a future paper that proves
+`etterStereoConjecture` or `¬ etterStereoConjecture` in Lean.
+
+Two earlier stand-ins here — the refuted symmetric `¬(E1 ∧ E2)` (see `Refutation`) and an
+automorphism-invariance structure — were both *inventions*, not Etter's, and are removed in
+favour of the fn-5 link construction.
+
+### Etter's [E3, fn. 5] construction
+
+* `[x=y]` is **equality without transitivity** — reflexive and symmetric only (`WeakEq`).
+* `[x =: y, z, …]` means "x equals y and z …, and anything unequal to y is unequal to x,
+  ditto z, …": x lies at the *meet* of their neighbourhoods (`WeakEq.Meet`).
+* `x ∈' y` is the existential link formula (`WeakEq.MemPrime`).
+* Etter's claim: "there is a set model of `[x=y]` such that `x∈'y` is membership in a set
+  model of set theory."
+
+**Fidelity caveats (`AGENTS.md` "No-oracle claims") — mine, none kernel-checkable:**
+(i) [E3, fn. 5]'s *symbolic* rendering of `=:` has transcription typos; we follow its
+unambiguous *prose* ("anything unequal to y is unequal to x"). (ii) fn. 5 uses a *single*
+non-transitive equality, which Etter says is "at the heart of" the stereo (two-equality)
+theorem; we formalize the fn-5 construction, not the never-pinned-down "two equalities"
+slogan. (iii) "membership in a set model of set theory" is rendered as: a surjection onto
+`ZFSet` under which `∈'` matches genuine ZF membership. The conjecture's *content* is
+Etter's; this precise Lean *rendering* is a reconstruction by Claude Opus 4.8.
+-/
+
+/-- Etter's `[x=y]` ([E3, fn. 5]): an equality with **transitivity dropped** — reflexive
+and symmetric only. Deliberately *not* an `Equivalence`. -/
+structure WeakEq (U : Type u) where
+  eq : U → U → Prop
+  refl : ∀ x, eq x x
+  symm : ∀ {x y}, eq x y → eq y x
+
+namespace WeakEq
+
+/-- Etter's meet operator `[x =: ys]`: `x` equals each member of `ys`, and anything unequal
+to any member of `ys` is unequal to `x` (so `x`'s neighbourhood lies under each of theirs). -/
+def Meet (W : WeakEq U) (x : U) (ys : List U) : Prop :=
+  (∀ y ∈ ys, W.eq x y) ∧ (∀ y ∈ ys, ∀ w, ¬ W.eq w y → ¬ W.eq w x)
+
+/-- Etter's link membership `x ∈' y` from [E3, fn. 5]:
+`∃ x' x'' y' y'' q q' q''` with
+`[q =: x,q'] ∧ [q' =: y,q,q''] ∧ [x' =: x,x''] ∧ [x'' =: x,x'] ∧ [y' =: y,y''] ∧ [y'' =: y,y']`. -/
+def MemPrime (W : WeakEq U) (x y : U) : Prop :=
+  ∃ x' x'' y' y'' q q' q'' : U,
+    W.Meet q [x, q'] ∧ W.Meet q' [y, q, q''] ∧
+    W.Meet x' [x, x''] ∧ W.Meet x'' [x, x'] ∧
+    W.Meet y' [y, y''] ∧ W.Meet y'' [y, y']
+
+end WeakEq
+
+/-- **Etter's Stereo Equality Conjecture** — a reconstruction of [E3, fn. 5]; see the section
+note for status and fidelity caveats. There is a carrier `U` with a non-transitive equality
+`W`, and a surjection `val : U → ZFSet` under which Etter's link membership `MemPrime` is
+*exactly* ZF membership of values — i.e. `∈'` is "membership in a set model of set theory".
+
+This is a stated `Prop`, **not** a proved theorem and **not** a `sorry`. Intended future
+work: a Lean proof of `etterStereoConjecture`, or of its negation. -/
+def etterStereoConjecture : Prop :=
+  ∃ (U : Type 1) (W : WeakEq U) (val : U → ZFSet.{0}),
+    Function.Surjective val ∧ ∀ x y : U, W.MemPrime x y ↔ val x ∈ val y
 
 end Stereo
 end UniversalityTheorem
