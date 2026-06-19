@@ -102,6 +102,15 @@ we transcribe Etter's [E3 fn.5] link construction faithfully and state the resul
 precise, falsifiable conjecture `Stereo.etterStereoConjecture : Prop`. It is the intended
 subject of a future paper that proves it or refutes it in Lean.
 
+The corrected paper exists in two forms that share the corrected appendices and differ
+**only in the abstract**: `docs/UniversalityOfThreePlaceIdentity.pdf` keeps the original
+tabular abstract, while `docs/vancouver.pdf` is the World Scientific / Festschrift submission,
+whose abstract inlines the definitions as text because that venue disallows tables in the
+abstract; it cites *The Expressive Power of Equality* as reference [9]. Because the corrected
+paper folds the corrections in directly, submitting it makes the separate `docs/Errata.pdf`
+followup unnecessary; the errata is retained for the case where the uncorrected version has
+already been published.
+
 ## Common Lake Commands
 
 * `lake update` — Update dependencies to latest compatible versions.

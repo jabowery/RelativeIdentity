@@ -55,19 +55,7 @@
 \maketitle
 
 \begin{abstract}
-    We present a formal proof, mechanized in Lean 4, demonstrating that three-place relative identity\cite{quine} is expressively adequate for mathematics. Given any model of ZFC, we construct definitional bridges showing that membership can be derived from relative identity and vice versa, with the derived membership extensionally equivalent to the original.
-\begin{tabular}{|c|c|}
-\hline
-\textbf{ZFC} & \textbf{Etter} \\
-\hline
-$=$ primitive & $x = y \;:=\; (\forall z,\, z \in x \leftrightarrow z \in y) \land (\forall w,\, x \in w \leftrightarrow y \in w)$ \\
-\hline
-$\in$ primitive & $y \in x \;:=\; \neg\,\mathrm{Id}(x,y,x)$ \\
-\hline
-(none) & $Quine \mathrm{Id}(x,y,z)$ primitive \\
-\hline
-\end{tabular} \\
-    This establishes that ZFC can be faithfully reformulated using relative identity as the sole primitive relation. We discuss the philosophical significance of this result for foundations of mathematics.
+    We present a formal proof, mechanized in Lean 4, demonstrating that three-place relative identity\cite{quine} is expressively adequate for mathematics. Given any model of ZFC, we construct definitional bridges showing that membership can be derived from relative identity and vice versa, with the derived membership extensionally equivalent to the original. $\mathrm{Id}(x, y, z) := \mathrm{QuineId}(x, y, z)$ primitive, $y \in x := \neg\,\mathrm{Id}(x, y, x)$, $x = y := (\forall z,\, z \in x \leftrightarrow z \in y) \land (\forall w,\, x \in w \leftrightarrow y \in w)$. This establishes that ZFC can be faithfully reformulated using relative identity as the sole primitive relation. We discuss the philosophical significance of this result for foundations of mathematics.
 \end{abstract}
 
 \section{Introduction}
