@@ -19,136 +19,121 @@ A Formal Proof and Its Significance''}
 \begin{document}
 \maketitle
 
-The following corrections result from checking the paper's claims against Etter's primary
-sources and the accompanying Lean~4 development. They concern Appendices~A and~B (the
-Stereo and RCV constructions) and the Lean modules that formalize them. \emph{The main body
-of the paper is unaffected.} Definitions D1 and D2, Theorems~4.1--4.3, and their
-mechanization (the round-trip theorem of \S5) are a faithful transcription of Etter's
-construction in \emph{Three-place Identity}~[E3] and stand unchanged; so does the paper's
-use of ``universality'' in the sense of expressive adequacy / relative interpretability,
-which is Etter's own rigorous notion of an open system and is the correct claim.
+These corrections concern the appendices and the accompanying Lean~4 modules of the above
+paper. They fall \emph{entirely} on the present author's reconstructions and formalization;
+\emph{none} of them touches Etter's own constructions, which they leave intact and, in
+several places, restore to their full strength. Because a list of corrections read in
+isolation can do an injustice to the work it corrects, the standing record is stated first.
 
-\section*{Erratum 1 --- The derived membership of Appendices A and B is not a ZF membership}
+\section{What Etter established, and what stands}
 
-\paragraph{Location.} Definition A.2; the RCV membership of \S B.3.
+Etter's thesis --- that \emph{identity}, taken as a relative, three-place predicate, is
+expressively adequate for the whole of mathematics --- is correct, and is of first-rank
+foundational significance. It inverts the usual order of foundations: not ``things exist,
+then we ask whether they are identical,'' but identity (from a viewpoint) as primitive, with
+membership, and hence set theory, \emph{derived}. The following are Etter's, are correct, and
+are unaffected by anything below.
 
-\paragraph{As published.} $y \in' x \iff \neg\bigl(E_1(y, x) \land E_2(y, x)\bigr)$ (A.2), and
-$y \in_{\mathrm{RCV}} x \iff \neg\bigl(R(y, x) \land C(y, x)\bigr)$ (\S B.3), asserted to
-satisfy / support the axioms of ZF set theory.
+\begin{itemize}
+\item \textbf{The Universality Theorem (main body).} Definitions D1 and D2, Theorems
+4.1--4.3, and the round-trip of \S5 are a faithful transcription of Etter's construction in
+\emph{Three-place Identity}~[E3]: membership is definable from three-place identity and
+\emph{vice versa}, with the two round-tripping. The mechanization discharges this with a
+clean axiom profile. This is the paper's central result and it is correct.
 
-\paragraph{Correction.} Because $E_1, E_2$ (resp.\ $R, C$) are equivalence relations, hence
-symmetric, each defined relation is symmetric:
-\[ y \in' x \iff x \in' y. \]
-ZF membership is not symmetric --- e.g.\ $\emptyset \in \{\emptyset\}$ but
-$\{\emptyset\} \notin \emptyset$ --- so neither relation can satisfy Extensionality (or
-Foundation beyond the trivial $x \notin' x$). Consequently the claims in \S A.2--A.3 that
-this membership yields ``full ZF set theory'' and in \S B.3 that the RCV definition
-``satisfies the axioms of ZF set theory'' are \textbf{withdrawn}. Equivalently,
-non-membership $E_1 \land E_2$ is the intersection of two equivalence relations and is
-therefore itself an equivalence relation --- a fact Etter states directly (``only
-conjunction creates equalities out of equalities'', [E5]).
+\item \textbf{The three-equality expressiveness theorem (RCV\,$\to$\,ZF).} That ZF set theory
+is constructively definable from three equality predicates is \emph{proved in full} by Etter
+in \emph{The Expressive Power of Equality}~[E1], via the cell construction. This is a
+complete theorem, not a conjecture. Its mechanization (\texttt{Cell.lean}) discharges Etter's
+Theorems~1 and~2 with a clean \texttt{\#print axioms}.
 
-Separately, the ordered-pair encoding in \S A.3 uses a distinct ``link'' construction that
-is not derivable from the A.2 membership; the two are independent and should not be
-presented as a single mechanism.
+\item \textbf{The two-equality Stereo Equality theorem.} A genuine research frontier, not an
+error. Etter announces it in \emph{Three-place Identity}~[E3, \S3], defers its proof to
+Section~3 of \emph{Membership and Identity}~[E2], and sketches the key \emph{link}
+construction in [E3, fn.~5]; the M\&I draft was never completed (so noted therein by
+R.~Shoup). It is stated precisely, and recorded as an open problem, below.
 
-\section*{Erratum 2 --- Provenance, and the correct RCV construction}
+\item \textbf{``Universality'' as relative interpretability.} The paper's use of
+``universal''/``open system'' is Etter's own rigorous notion of relative interpretability,
+and is the correct claim --- expressive adequacy, not model-theoretic foundationalism.
+\end{itemize}
 
-\paragraph{As published.} The intersection-style definitions above are presented as Etter's
-stereo / RCV membership.
+\emph{None of the corrections that follow qualifies any of these.}
 
-\paragraph{Correction.} These formulas are the present author's reconstructions; they do not
-occur in Etter's surviving papers. Etter's RCV$\to$ZF membership is the \emph{cell
-construction} of \emph{The Expressive Power of Equality}~[E1]: a cell is an ordered triple
-$\langle x, y, n\rangle$ with $x \,\eps\, y$ and $n \in \{1, 2\}$; its value is
-$\mathrm{Val}(\langle x, y, n\rangle) = x$ if $n = 1$, else $y$; the predicates $R, C, V$ are
-equalities on cells (same row, same column, same value), with $V$ taken as identity; and
-membership is recovered from $R, C, V$ alone by
+\section{What the corrections change}
+
+Where the paper went wrong was in the present author's \emph{secondary presentation} of
+Etter's two- and three-equality constructions, in Appendices~A and~B and their Lean modules.
+There the author substituted a \emph{symmetric} intersection formula --- a reconstruction of
+his own, which does not appear in Etter's papers --- for Etter's actual, \emph{directed}
+constructions, and a fragmentary mechanization for a complete one. The corrections below
+remove that authorial error and \emph{restore} Etter's stronger original work.
+
+\subsection*{Erratum 1 --- the author's intersection membership is not a ZF membership}
+
+\paragraph{As published.} Appendix~A defines $y \in' x \iff \neg\bigl(E_1(y, x) \land
+E_2(y, x)\bigr)$, and \S B.3 defines $y \in_{\mathrm{RCV}} x \iff \neg\bigl(R(y, x) \land
+C(y, x)\bigr)$, each asserted to satisfy the axioms of ZF.
+
+\paragraph{Correction.} These formulas were introduced by the present author. Because
+$E_1, E_2$ (resp.\ $R, C$) are equivalence relations, hence symmetric, each defined relation
+is symmetric, $y \in' x \iff x \in' y$. ZF membership is not symmetric ($\emptyset \in
+\{\emptyset\}$ but $\{\emptyset\} \notin \emptyset$), so these relations cannot be ZF
+memberships, and the assertions that they ``satisfy the axioms of ZF'' are withdrawn. The
+defect is one of the author's reconstruction; Etter's own constructions (Erratum~2) are
+directed, and are unaffected.
+
+\subsection*{Erratum 2 --- Etter's actual RCV\,$\to$\,ZF construction (restored)}
+
+\paragraph{Correction.} The intersection formulas above do not occur in Etter's surviving
+papers. Etter's RCV\,$\to$\,ZF membership is the \emph{cell construction} of \emph{The
+Expressive Power of Equality}~[E1]: a cell is an ordered triple $\langle x, y, n\rangle$ with
+$x \,\eps\, y$ and $n \in \{1, 2\}$, of value $\mathrm{Val}(\langle x, y, n\rangle) = x$ if
+$n = 1$ else $y$; $R, C, V$ are the row, column and value equalities on cells, with $V$ taken
+as identity; and membership is recovered from $R, C, V$ alone by
 \[ \mathrm{First}(c) \iff \forall d\,\exists e\,\bigl(V(e{=}d) \land C(e{=}c)\bigr), \]
 \[ c\,E\,d \iff \exists e, f\,\bigl(R(e{=}f) \land \mathrm{First}(e) \land V(c{=}e) \land
 \neg\mathrm{First}(f) \land V(d{=}f)\bigr). \]
-Appendix~B should cite [E1] and use this construction. The argument-asymmetry supplied by
-$\mathrm{First}/\neg\mathrm{First}$ is precisely what the symmetric intersection formula of
-Erratum~1 lacks.
+The argument-asymmetry supplied by $\mathrm{First}/\neg\mathrm{First}$ is exactly the
+directedness the author's symmetric formula lacked. Appendix~B should cite [E1] and use this
+construction; the corrected appendix does.
 
-\paragraph{What stands.} D1, D2, Theorems~4.1--4.3, and the \emph{statements} of the stereo
-and RCV theorems are Etter's and are transcribed faithfully.
+\subsection*{Erratum 3 --- status of the appendix results}
 
-\section*{Erratum 3 --- Status of the appendix theorems}
-
-\paragraph{Correction.} The three-equality result --- Theorem~B.4, that ZF is constructively
-definable in an RCV language --- is not merely asserted. It is proved in full in Etter's
-\emph{The Expressive Power of Equality}~[E1] by the cell construction above, which also
-yields the pairing direction (B.5). The only genuinely incomplete item is the two-equality
-``Stereo Equality Theorem'' of Appendix~A.
-
-\paragraph{The two-equality theorem is an open conjecture, not merely ``stated without
-proof''.} Checking the source closes the gap left in earlier statements of this erratum.
-Etter announces the theorem in \emph{Three-place Identity}~[E3, \S3] and defers its proof to
-Section~3 of \emph{Membership and Identity}~[E2]. The surviving M\&I draft develops the
-requisite machinery (intrinsic identity, the notion of a \emph{division}, and the category
-of \emph{Other}) and then \emph{breaks off before stating or proving the theorem}: its
-Section~3 ends with a bare, unproved theorem (``the intrinsic identity of a single-place
-predicate is a division''), Section~4 is an outline, and R.~Shoup notes within the draft
-that the paper was never completed. The only concrete construction Etter gives is the
-\emph{link sketch} of [E3, fn.~5]: an equality \emph{without transitivity} $[x{=}y]$
-(reflexive and symmetric only), a ``meet'' operator $[x =: y, z, \dots]$ (``$x$ equals each
-of $y, z, \dots$, and anything unequal to $y$ is unequal to $x$, ditto $z$''), and the link
-membership
+\paragraph{Correction.} The three-equality result --- that ZF is constructively definable in
+an RCV language --- is not merely asserted: it is proved in full in [E1] by the cell
+construction. The only genuinely open item is the \emph{two}-equality Stereo Equality
+theorem. Its construction is the \emph{link sketch} of [E3, fn.~5]: an equality \emph{without
+transitivity} $[x{=}y]$ (reflexive and symmetric only), a ``meet'' operator
+$[x =: y, z, \dots]$ (``$x$ equals each of $y, z, \dots$ and anything unequal to $y$ is
+unequal to $x$''), and a link membership
 \[ x \in' y \;:=\; \exists\, x',x'',y',y'',q,q',q''.\;
 [q{=:}x,q'] \;\&\; [q'{=:}y,q,q''] \;\&\; [x'{=:}x,x''] \;\&\; [x''{=:}x,x'] \;\&\;
 [y'{=:}y,y''] \;\&\; [y''{=:}y,y'], \]
-with the claim that ``there is a set model of $[x{=}y]$ such that $x \in' y$ is membership in
-a set model of set theory.'' Accordingly the two-equality theorem should be characterised as
-an \emph{open conjecture} grounded in this sketch, not as an established but unwritten
-theorem.
+with the claim that there is a set model of $[x{=}y]$ in which $x \in' y$ is ZF membership.
+The surviving M\&I draft breaks off before proving this, so the honest status is an
+\emph{open conjecture at the frontier} --- not an error, and not a claim the paper was
+entitled to assert as proved.
 
-\section*{Erratum 4 --- The Lean formalization of the appendices}
+\subsection*{Erratum 4 --- the Lean modules}
 
-\paragraph{Location.} The modules \texttt{Stereo.lean} and \texttt{RCV.lean} accompanying
-Appendices~A and~B.
+\paragraph{Correction.} As published, \texttt{Stereo.lean} and \texttt{RCV.lean} formalized
+the author's symmetric intersection formula and proved only disconnected fragments (a trivial
+irreflexivity, a definitional link lemma, partial uniqueness); they neither related
+membership to the link, nor established any ZF axiom, nor stated the symmetry that refutes
+the formula, nor contained Etter's cell apparatus. The main-body round-trip module is
+unaffected and stands. A faithful mechanization now accompanies the repository~[E6]:
+\texttt{Cell.lean} discharges Etter's Theorems~1 and~2 (the cell construction) over Mathlib's
+\texttt{ZFSet}; \texttt{Stereo.Refutation} records the symmetry obstruction; and the
+two-equality result is stated as a precise, falsifiable proposition
+(\texttt{etterStereoConjecture}) transcribing the [E3, fn.~5] link construction.
 
-\paragraph{As published.} The paper presents a Lean~4 mechanization of the development.
-
-\paragraph{Correction.} As published, these two modules do not certify the appendices'
-claims. They define \texttt{StereoMem}~$y\,x := \neg(E_1\,y\,x \land E_2\,y\,x)$ and
-\texttt{Mem\_RCV} by projecting $R, C$ onto it (with $V$ unused), and prove only: stereo
-irreflexivity ($x \notin' x$, trivial), a definitional link lemma, and partial
-first-component uniqueness. Every such theorem is true, but (i)~the membership predicate and
-the link predicate are never related by any theorem; (ii)~no ZF axiom beyond the
-irreflexivity sliver is established; (iii)~the \emph{symmetry} of the defined membership ---
-the property that refutes it as a ZF membership (Erratum~1) --- is never stated; and
-(iv)~Etter's cell apparatus (cells, $\mathrm{Val}$, $\mathrm{First}$, Theorems~1--2 of [E1])
-is absent. The modules therefore formalize the incorrect intersection formula and verify
-only disconnected fragments; they should not be cited as evidence for Appendix~B. The
-main-body module mechanizing Theorem~4.2 (the round-trip) is unaffected and stands.
-
-\paragraph{Corrected development.} A faithful mechanization now exists in the accompanying
-repository~[E6]: \texttt{Cell.lean} formalizes Etter's cell construction over Mathlib's
-\texttt{ZFSet}, discharging Theorems~1 and~2 (\texttt{first\_iff}, \texttt{mem\_iff}) with a
-clean \texttt{\#print axioms}; \texttt{Stereo.Refutation} proves the symmetry that refutes
-the intersection membership; and the two-equality result is recorded as a precise,
-falsifiable proposition \texttt{etterStereoConjecture}, transcribing the [E3, fn.~5] link
-construction, rather than as a proved theorem.
-
-\section*{Left unchanged (to prevent over-correction)}
-
-\begin{itemize}
-\item ``Universality''/``Universality Theorem'' and the abstract's claim of expressive
-adequacy: Etter's own rigorous notion of an open/universal system (relative
-interpretability). Correct; no change.
-\item Definitions D1, D2 and Theorems~4.1--4.3, with the round-trip Lean proof: faithful and
-correct.
-\item The proof of Theorem~A.3 (Stereo Irreflexivity): valid \emph{for} Definition~A.2. The
-definition, not the derivation, is at issue in Erratum~1.
-\end{itemize}
-
-\paragraph{Net effect.} These corrections \emph{raise} the standing of the underlying
-program: Etter's three-equality RCV$\to$ZF result is complete and correct~[E1]. The paper's
-appendices substituted a symmetric --- hence non-ZF --- summary, and a Lean development that
-certifies only fragments of it, for a proof that already exists and should be cited; and the
-two-equality claim is more precisely an open conjecture grounded in the [E3, fn.~5] link
-sketch.
+\paragraph{Net effect.} These corrections \emph{raise} the standing of the program. Where the
+paper claimed a result, Etter's own work already supplies a complete proof [E1]; where the
+paper reached past what is proved, the honest status is an open conjecture at the frontier of
+a still-living research program. The errors were the present author's, in a secondary
+presentation; Etter's constructions stand, and are stronger than the reconstruction that
+briefly stood in for them.
 
 \section*{References}
 
