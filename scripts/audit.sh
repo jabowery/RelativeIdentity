@@ -26,11 +26,11 @@ decls=(
   UniversalityTheorem.RCV.first_RCV_definable
   UniversalityTheorem.RCV.mem_RCV_irreflexive
   UniversalityTheorem.RCV.mem_RCV_asymmetric
-  # Appendix A: kept irreflexivity + the refutation of the symmetric reconstruction
+  # Appendix A: kept irreflexivity + the proof that the naive intersection candidate fails
   UniversalityTheorem.Stereo.stereo_irreflexivity
-  UniversalityTheorem.Stereo.Refutation.stereoMem_symm
-  UniversalityTheorem.Stereo.Refutation.symm_mem_no_empty_member
-  UniversalityTheorem.Stereo.Refutation.stereoMem_not_ZF
+  UniversalityTheorem.Stereo.intersectionMem_symm
+  UniversalityTheorem.Stereo.symm_mem_no_empty_member
+  UniversalityTheorem.Stereo.intersectionMem_not_ZF
   # The one genuinely open item: a stated conjecture (a Prop), not a proved theorem
   UniversalityTheorem.Stereo.etterStereoConjecture
 )

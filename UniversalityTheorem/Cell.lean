@@ -165,15 +165,15 @@ theorem mem_iff_zf (c d : Cell) : Mem c d ↔ Val c ∈ Val d := Iff.rfl
 
 /-! ## `cEd` is a genuine (irreflexive, asymmetric) membership — the green test
 
-Counterpart to `Stereo.Refutation` (Phase 1): the refuted intersection membership was
-*symmetric*; the cell membership inherits ZF's irreflexivity and asymmetry, and we exhibit
-a concrete witness — `∅ ∈ {∅}` but `{∅} ∉ ∅`. -/
+Counterpart to the intersection-candidate result of `Stereo` (`intersectionMem_not_ZF`):
+that symmetric candidate could not be a membership, whereas the cell membership inherits
+ZF's irreflexivity and asymmetry, witnessed concretely by `∅ ∈ {∅}` but `{∅} ∉ ∅`. -/
 
 /-- `cEd` is irreflexive (genuine ZF Foundation content, via regularity). -/
 theorem mem_irreflexive (c : Cell) : ¬ Mem c c := mem_irrefl _
 
-/-- `cEd` is asymmetric — the discriminating contrast with the refuted *symmetric*
-intersection membership (`Stereo.Refutation.stereoMem_symm`). -/
+/-- `cEd` is asymmetric — the discriminating contrast with the *symmetric* intersection
+candidate (`Stereo.intersectionMem_symm`). -/
 theorem mem_asymmetric {c d : Cell} : Mem c d → ¬ Mem d c := fun h => mem_asymm h
 
 /-- Concrete witness that `cEd` is not symmetric: `∅ ∈ {∅}` while `{∅} ∉ ∅`. -/

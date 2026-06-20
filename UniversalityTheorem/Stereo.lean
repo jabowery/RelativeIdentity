@@ -9,18 +9,18 @@ universe u
 variable {U : Type u}
 
 /-!
-## Appendix A: The Stereo Equality construction  ⚠ REFUTED MEMBERSHIP
+## Appendix A: Stereo equality, and why the naive intersection membership fails
 
 A Stereo structure is two independent equivalence relations `E1`, `E2` on `U`.
 
-**Provenance / status — see `docs/Errata.pdf` (Errata 1, 2, 4).**
-The membership `StereoMem y x := ¬(E1 y x ∧ E2 y x)` defined below is the *present
-author's reconstruction*; it does **not** occur in Etter's papers. It is **symmetric**
-(proved in `Refutation.stereoMem_symm`), and ZF membership is not symmetric
-(`∅ ∈ {∅}` but `{∅} ∉ ∅`), so it **cannot** be a ZF membership. Etter's actual RCV→ZF
-membership is the cell construction of *The Expressive Power of Equality* [E1], to be
-mechanized in `RCV.lean`. The other lemmas here (irreflexivity, the link lemmas) are
-individually true but establish **no** ZF axiom; they must not be cited as doing so.
+**What this section does (see `docs/Errata.pdf`).** Before Etter's actual construction we
+record why the simplest guess at a membership fails. The intersection candidate
+`IntersectionMem y x := ¬(E1 y x ∧ E2 y x)` — the present author's reconstruction, which does
+**not** occur in Etter's papers — is *symmetric* (`intersectionMem_symm`), and ZF membership
+is not symmetric (`∅ ∈ {∅}` but `{∅} ∉ ∅`), so it cannot be a ZF membership
+(`intersectionMem_not_ZF`). This refutes the **candidate formula**, not Etter's Stereo
+Equality theorem; it is exactly what motivates the directed link construction
+(`etterStereoConjecture`, below) and the asymmetric cell construction of `RCV.lean`.
 -/
 
 /-- A Stereo Equality structure consisting of two independent equivalence relations. -/
@@ -31,26 +31,26 @@ structure StereoModel (U : Type u) where
   equiv2 : Equivalence E2
 
 /-!
-### 1. The reconstructed membership (refuted — see `Refutation` below)
-`y ∈' x  :⇔  ¬(E1 y x ∧ E2 y x)`.
+### 1. The naive intersection candidate (shown below to fail)
+`y ∈' x  :⇔  ¬(E1 y x ∧ E2 y x)` — the intersection of the two equalities.
 -/
-def StereoMem (S : StereoModel U) (y x : U) : Prop :=
+def IntersectionMem (S : StereoModel U) (y x : U) : Prop :=
   ¬ (S.E1 y x ∧ S.E2 y x)
 
 /-!
-### Refutation: this membership is symmetric, hence not a ZF membership
+### Why the intersection candidate is not a ZF membership
 
 Per `AGENTS.md` ("Red tests"): we do not rely on *failing* to prove the bad thing — we
-*prove* it. The discriminating defect named in Erratum 1 is symmetry; we prove it, then
-derive the resulting contradiction with the existence of an empty set.
+*prove* it. The discriminating defect is symmetry; we prove it, then derive the resulting
+contradiction with the existence of an empty set. This is a fact about the **candidate
+formula** `IntersectionMem`; it says nothing against Etter's Stereo Equality theorem.
 -/
-namespace Refutation
 
-/-- **Red test (Erratum 1).** The reconstructed membership is *symmetric*, because `E1`
-and `E2` are equivalence relations. This is the property the appendix never stated. -/
-theorem stereoMem_symm (S : StereoModel U) (a b : U) :
-    StereoMem S a b ↔ StereoMem S b a := by
-  unfold StereoMem
+/-- The intersection candidate is *symmetric*, because `E1` and `E2` are equivalence
+relations — the property that disqualifies it as a membership. -/
+theorem intersectionMem_symm (S : StereoModel U) (a b : U) :
+    IntersectionMem S a b ↔ IntersectionMem S b a := by
+  unfold IntersectionMem
   constructor <;> intro h hcon <;>
     exact h ⟨S.equiv1.symm hcon.1, S.equiv2.symm hcon.2⟩
 
@@ -62,16 +62,14 @@ theorem symm_mem_no_empty_member
     (a s : U) (mem_a_s : Mem a s) (a_empty : ∀ x, ¬ Mem x a) : False :=
   a_empty s (symm a s mem_a_s)
 
-/-- **Red test (Erratum 1, conclusion).** `StereoMem` therefore cannot be a ZF
-membership: an "empty" set that is itself a member yields `False`. ZF requires exactly
-this configuration (`∅ ∈ {∅}` with `∅` empty), so `StereoMem` is refuted as a ZF
-membership for every Stereo model. -/
-theorem stereoMem_not_ZF (S : StereoModel U)
-    (a s : U) (mem_a_s : StereoMem S a s) (a_empty : ∀ x, ¬ StereoMem S x a) : False :=
-  symm_mem_no_empty_member (StereoMem S)
-    (fun x y h => (stereoMem_symm S x y).mp h) a s mem_a_s a_empty
-
-end Refutation
+/-- Therefore the intersection candidate cannot be a ZF membership: an "empty" set that is
+itself a member yields `False`, and ZF requires exactly that (`∅ ∈ {∅}` with `∅` empty).
+A fact about the candidate formula, not about Etter's theorem. -/
+theorem intersectionMem_not_ZF (S : StereoModel U)
+    (a s : U) (mem_a_s : IntersectionMem S a s) (a_empty : ∀ x, ¬ IntersectionMem S x a) :
+    False :=
+  symm_mem_no_empty_member (IntersectionMem S)
+    (fun x y h => (intersectionMem_symm S x y).mp h) a s mem_a_s a_empty
 
 /-!
 ### 2. Proof of Irreflexivity
@@ -79,9 +77,9 @@ Theorem from Appendix A.2:
 Derived membership is irreflexive (no set contains itself).
 -/
 theorem stereo_irreflexivity (S : StereoModel U) (x : U) :
-    ¬ StereoMem S x x := by
+    ¬ IntersectionMem S x x := by
   -- Unfold the definition: ¬ (¬ (E1 x x ∧ E2 x x))
-  unfold StereoMem
+  unfold IntersectionMem
   -- Intuitionistic proof: To prove ¬¬P, assume ¬P and derive False.
   intro h_not_mem
   -- We know E1 x x and E2 x x are true by reflexivity.
@@ -157,9 +155,9 @@ faithfully below as `def`initions and assembled into a precise, falsifiable **co
 `sorry`: it is a stated proposition — the intended subject of a future paper that proves
 `etterStereoConjecture` or `¬ etterStereoConjecture` in Lean.
 
-Two earlier stand-ins here — the refuted symmetric `¬(E1 ∧ E2)` (see `Refutation`) and an
-automorphism-invariance structure — were both *inventions*, not Etter's, and are removed in
-favour of the fn-5 link construction.
+Two earlier stand-ins here — the symmetric intersection candidate `¬(E1 ∧ E2)` (refuted
+above as `intersectionMem_not_ZF`) and an automorphism-invariance structure — were both
+*inventions*, not Etter's, and are removed in favour of the fn-5 link construction.
 
 ### Etter's [E3, fn. 5] construction
 

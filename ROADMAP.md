@@ -100,16 +100,16 @@ baseline from a clean checkout.
 
 ### Phase 1 — Refute the incorrect construction (the missing red test)  ✓ DONE
 
-> Implemented in `Stereo.lean`, namespace `Refutation`: `stereoMem_symm` (the symmetry
-> red test), `symm_mem_no_empty_member`, and `stereoMem_not_ZF` — all axiom-free
+> Implemented in `Stereo.lean`: `intersectionMem_symm` (the symmetry red test),
+> `symm_mem_no_empty_member`, and `intersectionMem_not_ZF` — all axiom-free
 > (`#print axioms` reports no dependence). False ZF claims downgraded in `Stereo.lean` and
 > `RCV.lean`. `lake build` green.
 
 Per AGENTS.md "Red tests": prove the *bad* property and accept the refutation, rather than
 relying on the absence of a proof.
 
-1.1 In a `Refutation` namespace, state and prove
-    `example : StereoMem S a b ↔ StereoMem S b a` — the symmetry the Errata says was never
+1.1 State and prove
+    `example : IntersectionMem S a b ↔ IntersectionMem S b a` — the symmetry the Errata says was never
     stated. Closing this is the discriminating red test.
 
 1.2 State that symmetric membership contradicts Extensionality (e.g. construct a two-point
@@ -178,7 +178,7 @@ witness closes; `#print axioms` clean on every key result.
 > (a surjection onto `ZFSet` under which `MemPrime` is genuine ZF membership). It is **not** a
 > `theorem` and carries **no** `sorry`; it is the intended subject of a future paper proving
 > `etterStereoConjecture` or `¬ etterStereoConjecture`. An earlier invented automorphism-
-> invariance statement was removed. `stereo_irreflexivity` and `Refutation` kept. The project
+> invariance statement was removed. `stereo_irreflexivity` and the intersection-candidate lemmas kept. The project
 > is now `sorry`-free; the conjecture is a clean `Prop` (`[propext]`).
 
 Per Erratum 3, this is the *only* genuinely incomplete item.
@@ -326,7 +326,7 @@ Notes:
       goal that closes without `sorry` (`Cell.mem_iff`, `Cell.first_iff`, `Cell.mem_iff_zf`,
       `Cell.val_surjective`).
 - [x] The discriminating property is proven on the side claimed: symmetry refutation for the
-      old formula (`Stereo.Refutation`) **and** an asymmetry witness for the cell `cEd`
+      old formula (`Stereo.intersectionMem_not_ZF`) **and** an asymmetry witness for the cell `cEd`
       (`Cell.mem_not_symmetric`/`mem_asymmetric`).
 - [x] The project is `sorry`-free. The two-equality Stereo result is not a proved theorem but
       a stated, falsifiable conjecture `Stereo.etterStereoConjecture : Prop`, faithfully

@@ -348,7 +348,7 @@ Write $E_1$ and $E_2$ for the two equalities, each reflexive, symmetric and tran
 \[
 y \in' x \iff \neg\bigl(E_1(y, x) \land E_2(y, x)\bigr).
 \]
-Because $E_1$ and $E_2$ are symmetric, this relation is symmetric: $y \in' x \iff x \in' y$. Set membership is not symmetric --- $\emptyset \in \{\emptyset\}$ while $\{\emptyset\} \notin \emptyset$ --- so no symmetric combination of the two equalities can be a membership relation. The \emph{directedness} of membership must instead be supplied by a directed \emph{link} between the two dimensions. (This obstruction is recorded in Lean as \texttt{Stereo.Refutation}.)
+Because $E_1$ and $E_2$ are symmetric, this relation is symmetric: $y \in' x \iff x \in' y$. Set membership is not symmetric --- $\emptyset \in \{\emptyset\}$ while $\{\emptyset\} \notin \emptyset$ --- so no symmetric combination of the two equalities can be a membership relation. The \emph{directedness} of membership must instead be supplied by a directed \emph{link} between the two dimensions. (In the Lean development, \texttt{Stereo.intersectionMem\_not\_ZF} proves that this symmetric intersection candidate cannot be a ZF membership --- a fact about the candidate formula, not about Etter's theorem.)
 
 \subsection{Etter's link construction}
 

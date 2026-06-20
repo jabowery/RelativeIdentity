@@ -74,7 +74,7 @@ the library modules.
 | `UniversalityTheorem/EtterEq.lean` | Relative-identity structures and Etter equality. |
 | `UniversalityTheorem/Scaffold.lean` | Slang scaffolding layer (used by `Progress`). |
 | `UniversalityTheorem/Progress.lean` | Sanity checks that key declarations are complete. |
-| `UniversalityTheorem/Stereo.lean` | **Appendix A.** The refuted symmetric reconstruction + its kernel-checked refutation (`Refutation`); a faithful transcription of Etter's [E3 fn.5] link construction (`WeakEq`, `Meet`, `MemPrime`); and the two-equality result stated as a precise **conjecture** `etterStereoConjecture : Prop` (not a theorem, no `sorry`). |
+| `UniversalityTheorem/Stereo.lean` | **Appendix A.** A kernel proof that the naive intersection candidate `¬(E1∧E2)` cannot be a ZF membership (`intersectionMem_not_ZF`) — motivating, not refuting, Etter's theorem; a faithful transcription of Etter's [E3 fn.5] link construction (`WeakEq`, `Meet`, `MemPrime`); and the two-equality result stated as a precise **conjecture** `etterStereoConjecture : Prop` (not a theorem, no `sorry`). |
 | `UniversalityTheorem/Cell.lean` | **Appendix B.** Etter's cell construction over `ZFSet` (*The Expressive Power of Equality*): Theorems 1 & 2 (`first_iff`, `mem_iff`) — the corrected RCV→ZF membership. |
 | `UniversalityTheorem/RCV.lean` | RCV-language interface over `Cell`: `Mem_RCV := cEd`, with definability and ZF-property theorems. |
 | `lakefile.toml` | Lake build configuration (package name, dependencies, etc.). |

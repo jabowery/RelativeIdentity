@@ -27,8 +27,8 @@ Phase 4) — listed below only to confirm it is a well-formed, axiom-clean propo
 'UniversalityTheorem.RCV.mem_RCV_irreflexive' depends on axioms: [propext]
 'UniversalityTheorem.RCV.mem_RCV_asymmetric' depends on axioms: [propext]
 'UniversalityTheorem.Stereo.stereo_irreflexivity' does not depend on any axioms
-'UniversalityTheorem.Stereo.Refutation.stereoMem_symm' does not depend on any axioms
-'UniversalityTheorem.Stereo.Refutation.symm_mem_no_empty_member' does not depend on any axioms
-'UniversalityTheorem.Stereo.Refutation.stereoMem_not_ZF' does not depend on any axioms
+'UniversalityTheorem.Stereo.intersectionMem_symm' does not depend on any axioms
+'UniversalityTheorem.Stereo.symm_mem_no_empty_member' does not depend on any axioms
+'UniversalityTheorem.Stereo.intersectionMem_not_ZF' does not depend on any axioms
 'UniversalityTheorem.Stereo.etterStereoConjecture' depends on axioms: [propext]
 ```

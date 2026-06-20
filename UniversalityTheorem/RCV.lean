@@ -13,7 +13,8 @@ recovered by Theorem 1 (`Cell.first_iff`).
 This module is the RCV-language interface over the corrected construction. The previous
 contents — an abstract `RCVModel` whose membership reused the *symmetric* intersection
 `¬(R y x ∧ C y x)` and dropped `V` — were refuted in `docs/Errata.pdf` and have been removed;
-see `Stereo.Refutation` for the kernel-checked refutation.
+see `Stereo.intersectionMem_not_ZF` for the kernel-checked proof that that intersection
+candidate fails.
 
 **Scope of what the kernel certifies here (a `No-oracle` note, per `AGENTS.md`).** The
 theorems below certify the *interpretation*: `Val` maps cell membership/identity to genuine
@@ -51,7 +52,7 @@ regularity), not the trivial `x ∉ x` sliver of the refuted construction. -/
 theorem mem_RCV_irreflexive (c : Cell) : ¬ Mem_RCV c c := Cell.mem_irreflexive c
 
 /-- The corrected membership is asymmetric — the discriminating contrast with the refuted
-*symmetric* intersection membership (`Stereo.Refutation.stereoMem_symm`). -/
+*symmetric* intersection candidate (`Stereo.intersectionMem_symm`). -/
 theorem mem_RCV_asymmetric {c d : Cell} : Mem_RCV c d → ¬ Mem_RCV d c :=
   Cell.mem_asymmetric
 
