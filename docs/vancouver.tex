@@ -1,4 +1,21 @@
-\documentclass[11pt, a4paper]{article}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Review Volume (last updated on 20-4-2015)                            %%
+%% Trim Size: 9in x 6in                                                 %%
+%% Text Area: 7.35in (include runningheads) x 4.5in                     %%
+%% Main Text: 10 on 13pt                                                %%
+%% For support: Yolande Koh, <ykoh@wspc.com.sg>                         %%
+%%              D. Rajesh Babu, <rajesh@wspc.com.sg>                    %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
+%\documentclass[wsdraft]{ws-rv9x6} % to draw border line around text area
+\documentclass{ws-rv9x6}
+\usepackage{subfigure}   % required only when side-by-side / subfigures are used
+%\usepackage{ws-rv-thm}   % comment this line when `amsthm / theorem / ntheorem` package is used
+\usepackage{ws-rv-van}   % numbered citation & references (default)
+%\usepackage{ws-index}   % to produce multiple indexes
+\makeindex
+%\newindex{aindx}{adx}{and}{Author Index}       % author index
+%\renewindex{default}{idx}{ind}{Subject Index}  % subject index
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage{geometry}
@@ -7,7 +24,7 @@
 \usepackage{hyperref}
 \usepackage{enumitem}
 \usepackage[title, titletoc]{appendix}
-\usepackage[super]{cite}
+%\usepackage[super]{cite}
 \usepackage[normalem]{ulem}     % if you want \uline (optional)
 \usepackage[dvipsnames]{xcolor}   % ← add this line
 
@@ -46,16 +63,18 @@
 
 
 
-\title{The Universality of Thomas L. Etter's Three-Place Identity:\\A Formal Proof and Its Significance}
-\author{James Bowery}
-\date{2025-12-24}
 
 \begin{document}
 
-\maketitle
+\chapter[The Universality of Thomas L. Etter's Three-Place Identity]{The Universality of Thomas L. Etter's Three-Place Identity:\\A Formal Proof and Its Significance\\ Document Style\label{ra_ch1}}
+%\maketitle
+
+
 
 \begin{abstract}
-    We present a formal proof, mechanized in Lean 4, demonstrating that three-place relative identity\cite{quine} is expressively adequate for mathematics. Given any model of ZFC, we construct definitional bridges showing that membership can be derived from relative identity and vice versa, with the derived membership extensionally equivalent to the original. $\mathrm{Id}(x, y, z) := \mathrm{QuineId}(x, y, z)$ primitive, $y \in x := \neg\,\mathrm{Id}(x, y, x)$, $x = y := (\forall z,\, z \in x \leftrightarrow z \in y) \land (\forall w,\, x \in w \leftrightarrow y \in w)$. This establishes that ZFC can be faithfully reformulated using relative identity as the sole primitive relation. We discuss the philosophical significance of this result for foundations of mathematics.
+    We present a formal proof, mechanized in Lean 4, demonstrating that three-place relative identity\cite{quine} is expressively adequate for mathematics. Given any model of ZFC, we construct definitional bridges showing that membership can be derived from relative identity and vice versa, with the derived membership extensionally equivalent to the original. $Id(x,y,z):= Quine \mathrm{Id}(x,y,z)$ primitive, $y \in x \;:=\; \neg\,\mathrm{Id}(x,y,x)$,
+$x = y \;:=\; (\forall z,\, z \in x \leftrightarrow z \in y) \land (\forall w,\, x \in w \leftrightarrow y \in w)$.
+    This establishes that ZFC can be faithfully reformulated using relative identity as the sole primitive relation. We discuss the philosophical significance of this result for foundations of mathematics.
 \end{abstract}
 
 \section{Introduction}
@@ -412,6 +431,81 @@ The argument-asymmetry carried by $\mathrm{First}/\neg\mathrm{First}$ is what ma
 \subsection{Relation to stereo equality}
 
 The RCV language is a ``trinocular'' extension of the stereo structure of Appendix~\ref{app:stereo}: stereo equality uses two equalities, RCV three. The three-equality result is the proved cell construction above; whether \emph{two} equalities already suffice is the open Stereo Equality Conjecture of Appendix~\ref{app:stereo}.
+\section{Discussion}
+\textbf{Dec 30, 2025, 12:26:19 AM \\
+From: Louis H Kauffman \\}
+\\
+Dear James, \\
+\\
+Thank you for this well-formulated paper. \\
+\\
+Very best, \\ 
+\\
+Lou Kauffman \\
+\\
+P.S. It is of interest to consider that the language of set theory is
+usually regarded as speaking to someone who understands it or may
+understand it from their point of view. Thus there is an unwritten
+relativization present in standard set theory. \\
+\\
+PP.S. How do you construct numbers in Etter's system? You mention that
+some people find {{},{{}}} an awkward construction for two. I would
+note that this construction is
+not "two" but only an instance of two. If we were to found a theory
+using relative indistinguishable, then we could use || for two as we
+do in informal practice. \\
+You may be interested in such foundations of arithmetic. Note for
+example that in Peano arithmetic one has 0 and S(0), S(S(0)), ... as
+the typographical representatives for natural numbers. And
+abbreviations occur such as S'''''''(0) to represent 7 that are no
+different in form than |||||||. In the typography of all formal
+systems one uses relative indistinguishables. \\
+
+
+\textbf{Tue, Dec 30, 2025, 12:06 PM \\
+From: James Bowery \\}
+\\
+Dear Louis, \\
+\\
+Coming from you that is high praise that belongs to ANPA's founding intellects. \\
+ \\
+Regarding the representation of numbers in Etter's paradigm, this is actually where I may be due some small credit: \\
+\\
+See Section 3 "Congruence and table-arithmetic" of Relation Arithmetic Revived regarding "Relation-number". \\
+\\
+I'd been looking for someone like Tom Etter since 1982 when I had been given the privilege -- and awful burden -- of architecting a nation-wide consumer networking service for AT\&T and Knight-Ridder News.  Since Heinz introduced me to Laws of Form summer of 1974, there was one thing I was not going to put up with -- and that was an ill-founded notion of state transition entering into the age of network programming and synchronization.  Hoare's "Occam" I called, at the time, "Occam's Chainsaw Massacre" in response to people trying to push it on me as "The Network Synchronization Solution".  But that was only one problem I had to address since statements (ie: state transitions) are degenerate (1:1) functions and functions are degenerate (N:1) relations and no one was taking the need for handling network update indeterminacy as seriously as it needed -- and it seems obvious to me that relations were where things had to go.  Finally, something else I wasn't going to put up with was any foundation for programming languages out of which empirical dimensions didn't naturally arise as an inevitable consequences -- as opposed to being bolted on as with F# nowadays. \\
+\\
+I found Tom circa 1996 when I ran across "Link Theory" which seemed to me addressed relations and time in a foundational sense that might provide what I was looking for in terms of the above.  So when HP decided, after I'd glued together their divisions with federated login, that I might be a good workhorse for their Internet Chapter 2 project (they had no idea I'd been involved in the foundation of the Internet with guys like David P. Reed), I demanded that they let me have a small amount of time to work on what I thought needed to be done.  That's when the teeth pulling began to get Tom support. \\
+\\
+I'd guess maybe 1/10,000 (literally) of that \$500M project was like pulling teeth to get Tom support.  In this case it was a dragon's tooth. \\
+\\
+Tom's follow-on work at Boundary Institute, after the DotCon bubble burst, is what produced Three-place Identity. \\
+\\
+I decided to focus on Three-place Identity first as a finished product as it seemed to me to encapsulate much of Tom's paradigm in the most concise fashion.  For instance, the notion of negative numbers may arise from the notion of relative identity as, what Tom called, "estranged presentations" come into coherence -- which is what happens in Tom's "quantum core" as best I understand it.  I'm still working on formalizing Relation Arithmetic in an attempt to bring it to the point that McGoveran's Ordering Operator Calculus can provide what may be the \textbf{real} founding notion of proto-"action".
+\\
+Thanks again! \\
+\\
+\textbf{Thu, Jan 15, 2026, 11:23 AM \\
+From: James Bowery \\}
+\\
+Dear Louis,
+
+The numeric applications of the Laws of Form, such as yours, deserve far more attention in the foundations of mathematics than they have hitherto received.  Despite being introduced to The Laws of Form by Heinz von Foerster in 1974 at the Biological Computing Laboratory, I have not been able to connect my engineering orientation to it due, mainly, to my own lack of competence to do so.  My "engineering orientation" is captured to some extent by Russell's phrase "the empirical world" in his lament about Relation Arithmetic.  When I had AT&T's backing in the early 1980s, I did request Bell Labs to do what Boundary Institute was, in part, financed to do by Federico Faggin: Identify ways in which the Laws of Form's notion of reentrance into the form could provide a mathematics of computation hence circuit design vastly more principled than that which now besets the information age.  
+
+Among those were some of the brightest minds from the University of Illinois at Urbana with whom I had worked at the PLATO project, that had graduated to Bell Labs where they were working on VLSI tools.  Despite AT&T's backing, I did not possess the authority to allocate research funds within Bell Labs.  This, combined with my engineering focus and aforementioned lack of independent competence, left me bereft of the tools I needed to fill the gap between what I ended up doing with Tom at HP 20 years later, and the foundational work on which you've been laboring in the vineyards.  
+
+Although I did encourage Bernie Lewin to finish and publish his book "Enthusiastic Mathematics", in part because it seemed to elaborate on the kind of foundation offered by The Laws of Form, the chasm between form and the empirical world doesn't seem to have been bridged in such a manner as to be accessible to my engineering mind.
+
+While Tom and I worked together, he never made mention of work outside of his own approach even though he went from there to Boundary Institute which, as the name implies, was named for your approach, ie: Boundary Mathematics.
+
+There were a number of people that I would have liked to have been able to support at HP if I'd not been cornered into threatening to resign if they didn't permit me to hire those that I needed.  Had I been permitted even 1\% of the \$500M budget, I would have hired not only you, but David McGoveran and Michael Manthey.
+
+I only wish I could have done more.
+
+Sincerely,
+
+James Bowery
 
 \end{appendices}
-\end{document}
+
+\end{document} 
